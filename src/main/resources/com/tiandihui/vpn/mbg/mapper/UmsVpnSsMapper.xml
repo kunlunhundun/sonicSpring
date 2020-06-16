@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tiandihui.vpn.mbg.mapper.UmsVpnSsMapper">
+  <resultMap id="BaseResultMap" type="com.tiandihui.vpn.mbg.model.UmsVpnSs">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="line_name" jdbcType="VARCHAR" property="lineName" />
+    <result column="use_status" jdbcType="INTEGER" property="useStatus" />
+    <result column="delete_status" jdbcType="INTEGER" property="deleteStatus" />
+    <result column="service_id" jdbcType="BIGINT" property="serviceId" />
+    <result column="ip" jdbcType="VARCHAR" property="ip" />
+    <result column="port" jdbcType="VARCHAR" property="port" />
+    <result column="password" jdbcType="VARCHAR" property="password" />
+    <result column="encription_type_id" jdbcType="INTEGER" property="encriptionTypeId" />
+    <result column="protocal_type_id" jdbcType="INTEGER" property="protocalTypeId" />
+    <result column="protocal_param" jdbcType="VARCHAR" property="protocalParam" />
+    <result column="obfs_id" jdbcType="INTEGER" property="obfsId" />
+    <result column="cofused_param" jdbcType="VARCHAR" property="cofusedParam" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    id, line_name, use_status, delete_status, service_id, ip, port, password, encription_type_id, 
+    protocal_type_id, protocal_param, obfs_id, cofused_param
+  </sql>
+  <select id="selectByExample" parameterType="com.tiandihui.vpn.mbg.model.UmsVpnSsExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from ums_vpn_ss
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from ums_vpn_ss
+    where id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from ums_vpn_ss
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.tiandihui.vpn.mbg.model.UmsVpnSsExample">
+    delete from ums_vpn_ss
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.tiandihui.vpn.mbg.model.UmsVpnSs">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into ums_vpn_ss (line_name, use_status, delete_status, 
+      service_id, ip, port, 
+      password, encription_type_id, protocal_type_id, 
+      protocal_param, obfs_id, cofused_param
+      )
+    values (#{lineName,jdbcType=VARCHAR}, #{useStatus,jdbcType=INTEGER}, #{deleteStatus,jdbcType=INTEGER}, 
+      #{serviceId,jdbcType=BIGINT}, #{ip,jdbcType=VARCHAR}, #{port,jdbcType=VARCHAR}, 
+      #{password,jdbcType=VARCHAR}, #{encriptionTypeId,jdbcType=INTEGER}, #{protocalTypeId,jdbcType=INTEGER}, 
+      #{protocalParam,jdbcType=VARCHAR}, #{obfsId,jdbcType=INTEGER}, #{cofusedParam,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.tiandihui.vpn.mbg.model.UmsVpnSs">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into ums_vpn_ss
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="lineName != null">
+        line_name,
+      </if>
+      <if test="useStatus != null">
+        use_status,
+      </if>
+      <if test="deleteStatus != null">
+        delete_status,
+      </if>
+      <if test="serviceId != null">
+        service_id,
+      </if>
+      <if test="ip != null">
+        ip,
+      </if>
+      <if test="port != null">
+        port,
+      </if>
+      <if test="password != null">
+        password,
+      </if>
+      <if test="encriptionTypeId != null">
+        encription_type_id,
+      </if>
+      <if test="protocalTypeId != null">
+        protocal_type_id,
+      </if>
+      <if test="protocalParam != null">
+        protocal_param,
+      </if>
+      <if test="obfsId != null">
+        obfs_id,
+      </if>
+      <if test="cofusedParam != null">
+        cofused_param,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="lineName != null">
+        #{lineName,jdbcType=VARCHAR},
+      </if>
+      <if test="useStatus != null">
+        #{useStatus,jdbcType=INTEGER},
+      </if>
+      <if test="deleteStatus != null">
+        #{deleteStatus,jdbcType=INTEGER},
+      </if>
+      <if test="serviceId != null">
+        #{serviceId,jdbcType=BIGINT},
+      </if>
+      <if test="ip != null">
+        #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="port != null">
+        #{port,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="encriptionTypeId != null">
+        #{encriptionTypeId,jdbcType=INTEGER},
+      </if>
+      <if test="protocalTypeId != null">
+        #{protocalTypeId,jdbcType=INTEGER},
+      </if>
+      <if test="protocalParam != null">
+        #{protocalParam,jdbcType=VARCHAR},
+      </if>
+      <if test="obfsId != null">
+        #{obfsId,jdbcType=INTEGER},
+      </if>
+      <if test="cofusedParam != null">
+        #{cofusedParam,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.tiandihui.vpn.mbg.model.UmsVpnSsExample" resultType="java.lang.Integer">
+    select count(*) from ums_vpn_ss
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update ums_vpn_ss
+    <set>
+      <if test="record.id != null">
+        id = #{record.id,jdbcType=BIGINT},
+      </if>
+      <if test="record.lineName != null">
+        line_name = #{record.lineName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.useStatus != null">
+        use_status = #{record.useStatus,jdbcType=INTEGER},
+      </if>
+      <if test="record.deleteStatus != null">
+        delete_status = #{record.deleteStatus,jdbcType=INTEGER},
+      </if>
+      <if test="record.serviceId != null">
+        service_id = #{record.serviceId,jdbcType=BIGINT},
+      </if>
+      <if test="record.ip != null">
+        ip = #{record.ip,jdbcType=VARCHAR},
+      </if>
+      <if test="record.port != null">
+        port = #{record.port,jdbcType=VARCHAR},
+      </if>
+      <if test="record.password != null">
+        password = #{record.password,jdbcType=VARCHAR},
+      </if>
+      <if test="record.encriptionTypeId != null">
+        encription_type_id = #{record.encriptionTypeId,jdbcType=INTEGER},
+      </if>
+      <if test="record.protocalTypeId != null">
+        protocal_type_id = #{record.protocalTypeId,jdbcType=INTEGER},
+      </if>
+      <if test="record.protocalParam != null">
+        protocal_param = #{record.protocalParam,jdbcType=VARCHAR},
+      </if>
+      <if test="record.obfsId != null">
+        obfs_id = #{record.obfsId,jdbcType=INTEGER},
+      </if>
+      <if test="record.cofusedParam != null">
+        cofused_param = #{record.cofusedParam,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update ums_vpn_ss
+    set id = #{record.id,jdbcType=BIGINT},
+      line_name = #{record.lineName,jdbcType=VARCHAR},
+      use_status = #{record.useStatus,jdbcType=INTEGER},
+      delete_status = #{record.deleteStatus,jdbcType=INTEGER},
+      service_id = #{record.serviceId,jdbcType=BIGINT},
+      ip = #{record.ip,jdbcType=VARCHAR},
+      port = #{record.port,jdbcType=VARCHAR},
+      password = #{record.password,jdbcType=VARCHAR},
+      encription_type_id = #{record.encriptionTypeId,jdbcType=INTEGER},
+      protocal_type_id = #{record.protocalTypeId,jdbcType=INTEGER},
+      protocal_param = #{record.protocalParam,jdbcType=VARCHAR},
+      obfs_id = #{record.obfsId,jdbcType=INTEGER},
+      cofused_param = #{record.cofusedParam,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.tiandihui.vpn.mbg.model.UmsVpnSs">
+    update ums_vpn_ss
+    <set>
+      <if test="lineName != null">
+        line_name = #{lineName,jdbcType=VARCHAR},
+      </if>
+      <if test="useStatus != null">
+        use_status = #{useStatus,jdbcType=INTEGER},
+      </if>
+      <if test="deleteStatus != null">
+        delete_status = #{deleteStatus,jdbcType=INTEGER},
+      </if>
+      <if test="serviceId != null">
+        service_id = #{serviceId,jdbcType=BIGINT},
+      </if>
+      <if test="ip != null">
+        ip = #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="port != null">
+        port = #{port,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null">
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="encriptionTypeId != null">
+        encription_type_id = #{encriptionTypeId,jdbcType=INTEGER},
+      </if>
+      <if test="protocalTypeId != null">
+        protocal_type_id = #{protocalTypeId,jdbcType=INTEGER},
+      </if>
+      <if test="protocalParam != null">
+        protocal_param = #{protocalParam,jdbcType=VARCHAR},
+      </if>
+      <if test="obfsId != null">
+        obfs_id = #{obfsId,jdbcType=INTEGER},
+      </if>
+      <if test="cofusedParam != null">
+        cofused_param = #{cofusedParam,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.tiandihui.vpn.mbg.model.UmsVpnSs">
+    update ums_vpn_ss
+    set line_name = #{lineName,jdbcType=VARCHAR},
+      use_status = #{useStatus,jdbcType=INTEGER},
+      delete_status = #{deleteStatus,jdbcType=INTEGER},
+      service_id = #{serviceId,jdbcType=BIGINT},
+      ip = #{ip,jdbcType=VARCHAR},
+      port = #{port,jdbcType=VARCHAR},
+      password = #{password,jdbcType=VARCHAR},
+      encription_type_id = #{encriptionTypeId,jdbcType=INTEGER},
+      protocal_type_id = #{protocalTypeId,jdbcType=INTEGER},
+      protocal_param = #{protocalParam,jdbcType=VARCHAR},
+      obfs_id = #{obfsId,jdbcType=INTEGER},
+      cofused_param = #{cofusedParam,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

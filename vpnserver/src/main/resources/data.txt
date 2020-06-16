@@ -1,0 +1,50 @@
+interface: wg0
+  public key: +jHagwWwKFUv/juiNYD0r8gypmMrcGHxUNwiuc9tc0s=
+  private key: (hidden)
+  listening port: 45184
+
+peer: ImiKkzmIxAHRUJboIzrhSKd65Tvagwwsn5/RaJdemAU=
+  endpoint: 123.121.93.85:37853
+  allowed ips: 10.0.0.5/32
+  latest handshake: 1 hour, 21 minutes, 18 seconds ago
+  transfer: 373.56 MiB received, 6.71 GiB sent
+
+peer: QR/DuIzswMoymKei25I//N/FiUolKedICTjZvehO5GQ=
+  endpoint: 112.32.14.187:17924
+  allowed ips: 10.0.0.17/32
+  latest handshake: 12 hours, 12 minutes, 9 seconds ago
+  transfer: 1.06 GiB received, 18.18 GiB sent
+
+peer: Wz9c1t+Khx75s4wTE2SyEtK2F14Gi4lBssfYCmzBtQk=
+  endpoint: 114.102.164.185:15234
+  allowed ips: 10.0.0.6/32
+  latest handshake: 15 hours, 51 minutes, 37 seconds ago
+  transfer: 2.78 GiB received, 50.50 GiB sent
+
+peer: Mrgyjpfqc6rHo1WE2DovFVTr45CLYV0QpuiPpf+tblU=
+  endpoint: 183.160.27.41:30316
+  allowed ips: 10.0.0.13/32
+  latest handshake: 17 hours, 42 minutes, 2 seconds ago
+  transfer: 2.68 GiB received, 54.04 GiB sent
+
+
+peer: yI5AgnvunhLeVQ6wpbgKKL51vwTy6Gm6B5GrfnIVXQo=
+  allowed ips: 10.0.0.11/32
+
+peer: kLqstcoDeRGYcWcdglkBiFCVO+F9JGEvZl9Z11JTBF4=
+  allowed ips: 10.0.0.18/32
+
+peer: v5T/7pXbLb3ic3cF1xgv+b3T3B5E77g9nqRFXBALN20=
+  allowed ips: 10.0.0.19/32
+
+peer: nurrnBe41XrdFaua8RdFNvI4v/ae6jbh3uaqTJqqEAU=
+  allowed ips: 10.0.0.20/32
+
+peer: xLis4LNAJ3oK1gHnZel2s9nQZn9QdNA3BUbHD+zX+1o=
+  allowed ips: 10.0.0.22/32
+
+peer: 5nI75AylczcAbHf5udLUjL5n8cupYgZOSg0YG/RNwVM=
+  allowed ips: 10.0.0.23/32
+
+peer: 6QrL1CCNl6mC05B1mCIxwpqoXO8k68I22Zp9uFdLcUM=
+  allowed ips: 10.0.0.24/32

@@ -1,6 +1,7 @@
 package com.tiandihui.vpn.mbg.model;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class UmsVpnWireguardExample {
@@ -914,53 +915,113 @@ public class UmsVpnWireguardExample {
             return (Criteria) this;
         }
 
-        public Criteria andPersistentKeepaliveEqualTo(Long value) {
+        public Criteria andPersistentKeepaliveEqualTo(Integer value) {
             addCriterion("persistent_keepalive =", value, "persistentKeepalive");
             return (Criteria) this;
         }
 
-        public Criteria andPersistentKeepaliveNotEqualTo(Long value) {
+        public Criteria andPersistentKeepaliveNotEqualTo(Integer value) {
             addCriterion("persistent_keepalive <>", value, "persistentKeepalive");
             return (Criteria) this;
         }
 
-        public Criteria andPersistentKeepaliveGreaterThan(Long value) {
+        public Criteria andPersistentKeepaliveGreaterThan(Integer value) {
             addCriterion("persistent_keepalive >", value, "persistentKeepalive");
             return (Criteria) this;
         }
 
-        public Criteria andPersistentKeepaliveGreaterThanOrEqualTo(Long value) {
+        public Criteria andPersistentKeepaliveGreaterThanOrEqualTo(Integer value) {
             addCriterion("persistent_keepalive >=", value, "persistentKeepalive");
             return (Criteria) this;
         }
 
-        public Criteria andPersistentKeepaliveLessThan(Long value) {
+        public Criteria andPersistentKeepaliveLessThan(Integer value) {
             addCriterion("persistent_keepalive <", value, "persistentKeepalive");
             return (Criteria) this;
         }
 
-        public Criteria andPersistentKeepaliveLessThanOrEqualTo(Long value) {
+        public Criteria andPersistentKeepaliveLessThanOrEqualTo(Integer value) {
             addCriterion("persistent_keepalive <=", value, "persistentKeepalive");
             return (Criteria) this;
         }
 
-        public Criteria andPersistentKeepaliveIn(List<Long> values) {
+        public Criteria andPersistentKeepaliveIn(List<Integer> values) {
             addCriterion("persistent_keepalive in", values, "persistentKeepalive");
             return (Criteria) this;
         }
 
-        public Criteria andPersistentKeepaliveNotIn(List<Long> values) {
+        public Criteria andPersistentKeepaliveNotIn(List<Integer> values) {
             addCriterion("persistent_keepalive not in", values, "persistentKeepalive");
             return (Criteria) this;
         }
 
-        public Criteria andPersistentKeepaliveBetween(Long value1, Long value2) {
+        public Criteria andPersistentKeepaliveBetween(Integer value1, Integer value2) {
             addCriterion("persistent_keepalive between", value1, value2, "persistentKeepalive");
             return (Criteria) this;
         }
 
-        public Criteria andPersistentKeepaliveNotBetween(Long value1, Long value2) {
+        public Criteria andPersistentKeepaliveNotBetween(Integer value1, Integer value2) {
             addCriterion("persistent_keepalive not between", value1, value2, "persistentKeepalive");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateTimeIsNull() {
+            addCriterion("update_time is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateTimeIsNotNull() {
+            addCriterion("update_time is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateTimeEqualTo(Date value) {
+            addCriterion("update_time =", value, "updateTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateTimeNotEqualTo(Date value) {
+            addCriterion("update_time <>", value, "updateTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateTimeGreaterThan(Date value) {
+            addCriterion("update_time >", value, "updateTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateTimeGreaterThanOrEqualTo(Date value) {
+            addCriterion("update_time >=", value, "updateTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateTimeLessThan(Date value) {
+            addCriterion("update_time <", value, "updateTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateTimeLessThanOrEqualTo(Date value) {
+            addCriterion("update_time <=", value, "updateTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateTimeIn(List<Date> values) {
+            addCriterion("update_time in", values, "updateTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateTimeNotIn(List<Date> values) {
+            addCriterion("update_time not in", values, "updateTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateTimeBetween(Date value1, Date value2) {
+            addCriterion("update_time between", value1, value2, "updateTime");
+            return (Criteria) this;
+        }
+
+        public Criteria andUpdateTimeNotBetween(Date value1, Date value2) {
+            addCriterion("update_time not between", value1, value2, "updateTime");
             return (Criteria) this;
         }
     }

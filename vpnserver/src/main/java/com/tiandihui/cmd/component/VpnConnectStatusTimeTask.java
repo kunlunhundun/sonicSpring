@@ -1,5 +1,8 @@
 package com.tiandihui.cmd.component;
 
+import com.tiandihui.cmd.common.javashell.ExecuteResult;
+import com.tiandihui.cmd.common.javashell.LocalCommandExecutor;
+import com.tiandihui.cmd.common.utils.StringUtils;
 import com.tiandihui.cmd.service.VpnConnectStatusService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,6 +11,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.Map;
 
 
 @Component
@@ -20,8 +25,11 @@ public class VpnConnectStatusTimeTask {
     private BufferedReader stdout;
 
     private Logger LOGGER = LoggerFactory.getLogger(VpnConnectStatusTimeTask.class);
-    @Autowired
+  /*  @Autowired
     private VpnConnectStatusService vpnConnectStatusService;
+
+    @Autowired
+    private LocalCommandExecutor localCommandExecutor; */
 
 
     /**
@@ -32,7 +40,9 @@ public class VpnConnectStatusTimeTask {
     @Scheduled(cron = "0/15 * *  * * ? ")   //每5秒执行一次
     private void updateVpnConnectStatus() {
 
-         vpnConnectStatusService.updateVpnConnectStatus();
+        System.out.println("updateVpnConnectStatus");
+
+        // vpnConnectStatusService.updateVpnConnectStatus();
 
 
       //  LOGGER.info("content：\n" + executeResult.getExecuteOut());
@@ -73,6 +83,7 @@ public class VpnConnectStatusTimeTask {
         vpnConnectStatusService.updateVpnConnectStatus();
         LOGGER.info("查询命令，{}", 1); */
     }
+
 
 }
 

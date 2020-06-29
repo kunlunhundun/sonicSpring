@@ -54,6 +54,7 @@ public class WebLogAspect  {
         long startTime = System.currentTimeMillis();
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
+
         WebLog webLog = new WebLog();
         Object result = proceedingJoinPoint.proceed();
         Signature signature = proceedingJoinPoint.getSignature();
@@ -66,13 +67,24 @@ public class WebLogAspect  {
         long endTime = System.currentTimeMillis();
         String urlStr = request.getRequestURI().toString();
         webLog.setBasePath(StrUtil.removeSuffix(urlStr,URLUtil.url(urlStr).getPath()));
-        webLog.setIp(request.getRemoteUser());
+        webLog.setIp(request.getRemoteAddr());
         webLog.setParameter(getParameter(method,proceedingJoinPoint.getArgs()));
         webLog.setResult(result);
         webLog.setSpendTime((int) (endTime - startTime));
         webLog.setStartTime(startTime);
         webLog.setUri(request.getRequestURI());
         webLog.setUrl(request.getRequestURL().toString());
+
+
+        String urlMethod  = request.getMethod();
+        String urlPath = request.getRequestURI().toString();
+        String romoteIp = request.getRemoteAddr();
+        if (urlPath.contains("login") || urlPath.contains("loginByToken") || urlPath.contains("register")) {
+            String deviceId = request.getHeader("deviceId");
+            String deviceBrand = request.getHeader("deviceBrand");
+        }
+
+
         Map<String,Object> logMap = new HashMap<>();
         logMap.put("url",webLog.getUrl());
         logMap.put("method",webLog.getMethod());

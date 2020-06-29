@@ -1,6 +1,9 @@
 package com.tiandihui.vpn.service.impl;
 
+import com.tiandihui.vpn.common.api.ResultCode;
 import com.tiandihui.vpn.common.exception.Asserts;
+import com.tiandihui.vpn.common.utils.AddressUtils;
+import com.tiandihui.vpn.common.utils.IpUtils;
 import com.tiandihui.vpn.common.utils.Utils;
 import com.tiandihui.vpn.domain.LoginSuccessInfo;
 import com.tiandihui.vpn.domain.MemberDetails;
@@ -9,10 +12,7 @@ import com.tiandihui.vpn.domain.VpnSsDetailInfo;
 import com.tiandihui.vpn.mbg.mapper.*;
 import com.tiandihui.vpn.mbg.model.*;
 import com.tiandihui.vpn.security.JwtTokenUtil;
-import com.tiandihui.vpn.service.UmsMemberCacheService;
-import com.tiandihui.vpn.service.UmsMemberService;
-import com.tiandihui.vpn.service.UmsVpnSSService;
-import com.tiandihui.vpn.service.UmsVpnWireguardService;
+import com.tiandihui.vpn.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
@@ -39,8 +39,6 @@ public class UmsMemberServiceImpl implements UmsMemberService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UmsMemberServiceImpl.class);
 
-   // @Autowired
-   // private PasswordEncoder passwordEncoder;
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
@@ -55,6 +53,9 @@ public class UmsMemberServiceImpl implements UmsMemberService {
 
     @Autowired
     private UmsVpnWireguardService wireguardService;
+
+    @Autowired
+    private UmsVpnServiceMapper vpnServceMapper;
 
     @Autowired
     private UmsVpnSsEncriptionTypeMapper ssEncriptionTypeMapper;
@@ -73,6 +74,9 @@ public class UmsMemberServiceImpl implements UmsMemberService {
 
     @Autowired
     UmsMemberDeviceIdMapper deviceIdMapper;
+
+    @Autowired
+    MailService mailService;
 
     @Override
     public UmsMember getByUsername(String username) {
@@ -98,12 +102,16 @@ public class UmsMemberServiceImpl implements UmsMemberService {
 
 
     @Override
-    public LoginSuccessInfo register(String username, String password, String deviceId, String deviceBrand) {
+    public LoginSuccessInfo register(String username, String password, String code ,String deviceId, String deviceBrand) {
+
+        if (mailService.verifyCode(username,code,1) == false) {
+            Asserts.fail(ResultCode.WRONGCODE);
+        }
         UmsMemberExample example = new UmsMemberExample();
         example.createCriteria().andUsernameEqualTo(username);
         List<UmsMember> memberList = memberMapper.selectByExample(example);
         if (!CollectionUtils.isEmpty(memberList)) {
-            Asserts.fail("该用户已经存在");
+            Asserts.fail(ResultCode.REPEATUSER);
         }
         //1.保存用戶
         UmsMember umsMember = new UmsMember();
@@ -175,8 +183,14 @@ public class UmsMemberServiceImpl implements UmsMemberService {
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         String token = jwtTokenUtil.generateToken(userDetails);
 
-        memberCacheService.setLoginToken(umsMember.getUsername(),token);
-
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        HttpServletRequest request = attributes.getRequest();
+        String osType = request.getHeader("OsType");
+        if (!(osType.equals("android") || osType.equals("ios") || osType.equals("pc"))){
+            // 需要传入平台参数
+            Asserts.fail(ResultCode.VALIDATE_FAILED);
+        }
+        memberCacheService.setLoginToken(umsMember.getUsername()+osType,token);
         LoginSuccessInfo successInfo = new LoginSuccessInfo();
         BeanUtils.copyProperties(umsMember, successInfo);
         successInfo.setToken(token);
@@ -223,20 +237,21 @@ public class UmsMemberServiceImpl implements UmsMemberService {
     }
 
     @Override
-    public void updatePassword(String telephone, String password, String authCode) {
+    public void updatePassword(String username, String password, String authCode) {
         UmsMemberExample example = new UmsMemberExample();
-        example.createCriteria().andPhoneEqualTo(telephone);
+        example.createCriteria().andUsernameEqualTo(username);
         List<UmsMember> memberList = memberMapper.selectByExample(example);
-        if (!CollectionUtils.isEmpty(memberList)) {
-            Asserts.fail("该账号不存在");
+        if (CollectionUtils.isEmpty(memberList)) {
+            Asserts.fail(ResultCode.UNFINDUSER);
         }
-        if (!verifyAuthCode(authCode,telephone)) {
-            Asserts.fail("验证码不正确");
+        if (!mailService.verifyCode(username,authCode,2)) {
+            Asserts.fail(ResultCode.WRONGCODE);
         }
         UmsMember umsMember = memberList.get(0);
         umsMember.setPassword(password);
         memberMapper.updateByPrimaryKeySelective(umsMember);
         memberCacheService.delMember(umsMember.getId());
+        memberCacheService.setMember(umsMember);
     }
 
     @Override
@@ -289,8 +304,21 @@ public class UmsMemberServiceImpl implements UmsMemberService {
         LoginSuccessInfo successInfo = null;
         try {
             UserDetails userDetails = loadUserByUsername(username);
-            String lastToken = memberCacheService.getLoginToken(username);
-            if (!lastToken.equals(token) ) {
+
+            ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+            HttpServletRequest request = attributes.getRequest();
+            String osType = request.getHeader("OsType");
+            if (!(osType.equals("android") || osType.equals("ios") || osType.equals("pc"))){
+                // 需要传入平台参数
+                Asserts.fail(ResultCode.VALIDATE_FAILED);
+            }
+            String lastToken = memberCacheService.getLoginToken(username+osType);
+            if ( lastToken == null || !lastToken.equals(token) ) {
+                if (lastToken == null) {
+                    Asserts.fail(ResultCode.UNAUTHORIZED);
+                } else  {
+                    Asserts.fail(ResultCode.SINGLESIGNOUT); //单点登录
+                }
                 throw new BadCredentialsException("token不正确或已失效,请重新登录");
             }
             successInfo = handleLogin(userDetails);
@@ -355,26 +383,64 @@ public class UmsMemberServiceImpl implements UmsMemberService {
         return modifyConnectStatus(connectType,id,1);
     }
 
+    @Override
     public int disConnect(int connectType, Long id) {
-
-       return modifyConnectStatus(connectType,id,0);
+        return modifyConnectStatus(connectType,id,0);
     }
 
 
     @Override
-    public int recLoginLog() {
+    public int recLoginLog(String username) {
+
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
-        String ip =  request.getRemoteUser();
-        String mac = request.getHeader("mac");
-        String uid = request.getHeader("uid");
-        UmsMember member = getCurrentMember();
+
+        String urlPath = request.getRequestURI().toString();
+        String remoteIp = request.getRemoteAddr();
+        String ipAddr =  IpUtils.getIpAddr(request);
+        if (!ipAddr.equals(remoteIp)) {
+           LOGGER.info("remoteIp:" + remoteIp + "ipAddr:" + ipAddr);
+        }
+        String deviceId = request.getHeader("deviceId");
+        String deviceBrand = request.getHeader("deviceBrand");
+        String osType = request.getHeader("OsType");
+        String address = "";
+        if (remoteIp.length() > 2) {
+           address =  AddressUtils.getAddressFromIp(remoteIp);
+        }
+        int type = 0;
+        if (osType.equals("android")) {
+            type = 1;
+        } else  if (osType.equals("ios")) {
+            type = 2;
+        }
+
+        UmsMemberExample example = new UmsMemberExample();
+        example.createCriteria().andUsernameEqualTo(username);
+        List<UmsMember> memberList = memberMapper.selectByExample(example);
+        if (CollectionUtils.isEmpty(memberList)) {
+            return 0;
+        }
+        UmsMember member = memberList.get(0);
+        UmsMemberDeviceId memberDeviceId = new UmsMemberDeviceId();
+        memberDeviceId.setDevicebrand(deviceBrand);
+        memberDeviceId.setDeviceId(deviceId);
+        memberDeviceId.setUsername(username);
+        memberDeviceId.setPlatform(type);
+        memberDeviceId.setMemberId(member.getId());
+
+       int count =  deviceIdMapper.insertSelective(memberDeviceId);
+       LOGGER.info("deviceIdMapper:count: " + count);
+
         UmsMemberLoginLog loginLog = new UmsMemberLoginLog();
         loginLog.setCreateTime(new Date());
+        loginLog.setFromIp(remoteIp);
+        loginLog.setDeviceId(deviceId);
+        loginLog.setLoginType(type);
+        loginLog.setIpLocation(address);
         loginLog.setMemberId(member.getId());
-        loginLog.setIp(ip);
-        loginLog.setLoginMac(mac);
-        loginLog.setLoginUid(uid);
+        loginLog.setUsername(username);
+
         return loginLogMapper.insertSelective(loginLog);
     }
     //对输入的验证码进行校验
@@ -387,12 +453,31 @@ public class UmsMemberServiceImpl implements UmsMemberService {
     }
 
 
+
+
     private int modifyConnectStatus(int connectType, Long id, int status) {
 
         UmsMember member = getCurrentMember();
         member.setVpnConnectType(connectType);
         memberMapper.updateByPrimaryKeySelective(member);
 
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        HttpServletRequest request = attributes.getRequest();
+        String osType = request.getHeader("OsType");
+        String token = request.getHeader("token");
+        String deviceId = request.getHeader("deviceId");
+        if ( !(osType.equals("android") || osType.equals("ios") || osType.equals("pc"))) {
+            // 需要传入平台参数
+            Asserts.fail(ResultCode.VALIDATE_FAILED);
+        }
+        String loginToken = memberCacheService.getLoginToken(member.getUsername()+osType);
+        if (loginToken == null) {
+            Asserts.fail(ResultCode.UNAUTHORIZED);
+        }
+        if (!token.equals(loginToken)) {
+            Asserts.fail(ResultCode.SINGLESIGNOUT);
+        }
+        String serviceIp = "";
         UmsMemberStatisticsInfo statisticsInfo = new UmsMemberStatisticsInfo();
         statisticsInfo.setLastConnectway(connectType);
         if (connectType == 1) {
@@ -400,11 +485,38 @@ public class UmsMemberServiceImpl implements UmsMemberService {
 
         } else  if (connectType == 2) {
             statisticsInfo.setWireguardId(id);
+
             UmsVpnWireguard vpnWireguard = new UmsVpnWireguard();
             vpnWireguard.setId(id);
             vpnWireguard.setUseStatus(status);
+            vpnWireguard.setUpdateTime(new Date());
             wireguardService.update(vpnWireguard);
+           Long serviceId = vpnWireguard.getServiceId();
+            UmsVpnService vpnService =  vpnServceMapper.selectByPrimaryKey(serviceId);
+            if (vpnService != null) {
+                serviceIp = vpnService.getIp();
+            }
         }
+        //更新loginlog表中的连接时间和断开时间
+        Date beforeDate = Utils.subDays(1);
+        UmsMemberLoginLogExample loginLogExample = new UmsMemberLoginLogExample();
+        loginLogExample.createCriteria().andDeviceIdEqualTo(deviceId).andCreateTimeEqualTo(beforeDate);
+        loginLogExample.setOrderByClause("create_time desc");
+        List<UmsMemberLoginLog> loginLogList = loginLogMapper.selectByExample(loginLogExample);
+        if (!CollectionUtils.isEmpty(loginLogList)) {
+            UmsMemberLoginLog memberLoginLog = loginLogList.get(0);
+            if (status == 0) {
+                memberLoginLog.setDisconnectTime(new Date());
+            } else  {
+                Date connectDate =  memberLoginLog.getConnectTime();
+                if(connectDate == null) {
+                    memberLoginLog.setConnectTime(new Date());
+                }
+                memberLoginLog.setServiceIp(serviceIp);
+            }
+           loginLogMapper.updateByPrimaryKeySelective(memberLoginLog);
+        }
+
         UmsMemberStatisticsInfoExample example = new UmsMemberStatisticsInfoExample();
         example.createCriteria().andMemberIdEqualTo(member.getId());
         return  statisticsInfoMapper.updateByExampleSelective(statisticsInfo,example);
@@ -453,8 +565,15 @@ public class UmsMemberServiceImpl implements UmsMemberService {
         // 获取用户信息 且产生token 把过期时间返回去
         String token = null;
         token = jwtTokenUtil.generateToken(userDetails);
-        memberCacheService.setLoginToken(member.getUsername(),token);
 
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        HttpServletRequest request = attributes.getRequest();
+        String osType = request.getHeader("OsType");
+        if (!(osType.equals("android") || osType.equals("ios") || osType.equals("pc"))){
+            // 需要传入平台参数
+            Asserts.fail(ResultCode.VALIDATE_FAILED);
+        }
+        memberCacheService.setLoginToken(member.getUsername()+osType,token);
         UmsMember currentMember = getCurrentMember();
         LoginSuccessInfo successInfo = new LoginSuccessInfo();
         BeanUtils.copyProperties(currentMember, successInfo);

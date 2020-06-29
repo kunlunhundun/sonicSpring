@@ -16,24 +16,68 @@ Date: 2020-04-26 10:34:13
 SET FOREIGN_KEY_CHECKS=0;
 
 -- ----------------------------
--- Table structure for cms_subject_comment
+-- Table structure for cms_comment
 -- ----------------------------
-DROP TABLE IF EXISTS `cms_subject_comment`;
-CREATE TABLE `cms_subject_comment` (
+DROP TABLE IF EXISTS `cms_comment`;
+CREATE TABLE `cms_comment` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
   `member_id` bigint(20) DEFAULT NULL,
-  `subject_id` bigint(20) DEFAULT NULL,
-  `member_nick_name` varchar(255) DEFAULT NULL,
+  `comment_type` int(1) DEFAULT NULL COMMENT '0->功能性问题1->优化问题2->其他',
+  `nick_name` varchar(255) DEFAULT NULL,
   `member_icon` varchar(255) DEFAULT NULL,
-  `content` varchar(1000) DEFAULT NULL,
+  `content` varchar(2000) DEFAULT NULL,
   `create_time` datetime DEFAULT NULL,
-  `show_status` int(1) DEFAULT NULL,
+  `delete_status` int(1) DEFAULT NULL COMMENT '0->正常状态1->删除',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户评论表';
 
 -- ----------------------------
--- Records of cms_subject_comment
+-- Records of cms_comment
 -- ----------------------------
+
+
+-- ----------------------------
+-- Table structure for cms__
+-- ----------------------------
+DROP TABLE IF EXISTS `cms_comment_official_reply`;
+CREATE TABLE `cms_comment_official_reply` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `member_id` bigint(20) DEFAULT NULL,
+  `comment_id` bigint(20) DEFAULT NULL COMMENT '用户反馈问题的id',
+  `nick_name` varchar(255) DEFAULT NULL,
+  `official_icon` varchar(255) DEFAULT NULL,
+  `content` varchar(2000) DEFAULT NULL,
+  `create_time` datetime DEFAULT NULL,
+  `delete_status` int(1) DEFAULT NULL COMMENT '0->正常状态1->删除',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='官方回复表';
+
+-- ----------------------------
+-- Records of cms_comment_official_reply
+-- ----------------------------
+
+
+-- ----------------------------
+-- Table structure for cms_app_file
+-- ----------------------------
+DROP TABLE IF EXISTS `cms_app_file`;
+CREATE TABLE `cms_app_file` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `app_name` varchar(255) DEFAULT NULL COMMENT 'app名字',
+  `app_address` varchar(255) DEFAULT NULL COMMENT 'apk地址',
+  `v` varchar(255) DEFAULT NULL COMMENT 'app版本号',
+  `is_must_update` int(1) DEFAULT NULL COMMENT '0->正常更新1->强制更新',
+  `create_time` datetime DEFAULT NULL,
+  `platform` int(1) DEFAULT NULL COMMENT '0->android1->ios2->pc',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='官方回复表';
+
+-- ----------------------------
+-- Records of cms_app_file
+-- ----------------------------
+
+
+
 
 -- ----------------------------
 -- Table structure for ums_member
@@ -81,9 +125,10 @@ CREATE TABLE `ums_member_device_id` (
   `member_id` bigint(20) DEFAULT NULL,
   `username` varchar(100) DEFAULT NULL,
   `devicebrand` varchar(100) DEFAULT NULL COMMENT '设备品牌名称',
+  `platform` int(1) DEFAULT NULL COMMENT '0->android1->ios2->pc',
   PRIMARY KEY (`id`),
   KEY `idx_device_id` (`device_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='设备唯一标识表deviceid';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='设备唯一标识表根据此表可以查询使用过几台设备登录过';
 
 -- ----------------------------
 -- Records of ums_member_device_id
@@ -119,20 +164,46 @@ INSERT INTO `ums_member_level` VALUES ('1', '试用期会员', '1000', '0', '0.0
 DROP TABLE IF EXISTS `ums_member_login_log`;
 CREATE TABLE `ums_member_login_log` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `username` varchar(64) DEFAULT NULL,
   `member_id` bigint(20) DEFAULT NULL,
   `create_time` datetime DEFAULT NULL,
-  `ip` varchar(64) DEFAULT NULL,
+  `from_ip` varchar(64) DEFAULT NULL COMMENT '用户登录的目标IP',
+  `ip_location` varchar(64) DEFAULT NULL COMMENT '用户IP归属地',
+  `service_ip` varchar(64) DEFAULT NULL COMMENT '连接选择的服务器ip',
   `city` varchar(64) DEFAULT NULL,
+  `device_id` varchar(64) DEFAULT NULL COMMENT '用户的设备ID',
   `login_type` int(1) DEFAULT NULL COMMENT '登录类型：0->PC；1->android;2->ios;',
-  `province` varchar(64) DEFAULT NULL,
   `login_mac` varchar(64) DEFAULT NULL,
   `login_uid` varchar(64) DEFAULT NULL, 
+  `connect_time`  datetime  DEFAULT NULL COMMENT '开始连接时间',
+  `disconnect_time`  datetime  DEFAULT NULL COMMENT '断开时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='会员登录记录';
 
 -- ----------------------------
 -- Records of ums_member_login_log
 -- ----------------------------
+
+-- ----------------------------
+-- Table structure for ums_member_filter_app
+-- ----------------------------
+DROP TABLE IF EXISTS `ums_member_filter_app`;
+CREATE TABLE `ums_member_filter_app` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `username` varchar(64) DEFAULT NULL,
+  `member_id` bigint(20) DEFAULT NULL,
+  `create_time` datetime DEFAULT NULL,
+  `filter_app` varchar(1000) DEFAULT NULL COMMENT '过滤app->1:不过滤->2:不允许哪些app->3允许哪些APP用{\"type\":\"1\",\"app\":['','']}',
+  `login_type` int(1) DEFAULT NULL COMMENT '登录类型：0->PC；1->android;2->ios;',
+  `login_mac` varchar(64) DEFAULT NULL,
+  `device_id` varchar(64) DEFAULT NULL COMMENT '用户登录的设备唯一号', 
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='会员登录记录';
+
+-- ----------------------------
+-- Records of ums_member_filter_app
+-- ----------------------------
+
 
 
 -- ----------------------------
@@ -260,20 +331,19 @@ CREATE TABLE `ums_vpn_wireguard` (
   `publickey` varchar(1024) DEFAULT NULL,
   `endpoint` varchar(64) DEFAULT NULL,
   `allowed_ips` varchar(64) DEFAULT NULL,
-  `persistent_keepalive` bigint(20) DEFAULT 25,
-  `create_time` datetime DEFAULT NULL COMMENT '提交时间',
-  `update_date` datetime DEFAULT NULL COMMENT '更新状态时间'
+  `persistent_keepalive` int(5) DEFAULT 25,
+  `update_time` datetime DEFAULT NULL COMMENT '更新状态时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='vpn->wireguard数据库';
 
-INSERT INTO `ums_vpn_wireguard` VALUES ( '1', '0', '0', 'CHINA Line','1','0HvBmNS79bH8DTehScAsBznDlxRMDNKgShTIN6tYemU=','10.77.77.2/32','8.8.8.8','1420','fShlhFxOtwwBP5wL8RfvLFloiQL4WkZ6e3e1RYqrAnQ=','121.196.120.24:33649','0.0.0.0/0, ::0/0','25');
-INSERT INTO `ums_vpn_wireguard` VALUES ( '2', '0', '0', 'CHINA HANGKONG Line','2','oOhoIT9JMBFJ0qDoXNMLbfwHXUfT6OFR1kMc1Dfz/Ww=','10.0.0.30/24','8.8.8.8','1420','+jHagwWwKFUv/juiNYD0r8gypmMrcGHxUNwiuc9tc0s=','47.244.169.80:45184','0.0.0.0/0, ::0/0','25');
-INSERT INTO `ums_vpn_wireguard` VALUES ( '3', '0', '0', 'CHINA HANGKONG Line','2','QCFtvVpYgMMwojrRqVCpOH5XC7LY/H8a+8IoLPUclVg=','10.0.0.28/24','8.8.8.8','1420','+jHagwWwKFUv/juiNYD0r8gypmMrcGHxUNwiuc9tc0s=','47.244.169.80:45184','0.0.0.0/0, ::0/0','25');
-INSERT INTO `ums_vpn_wireguard` VALUES ( '4', '0', '0', 'CHINA HANGKONG Line','2','oHKc6znqFBXVVGB4AYhPMWY0b+w+2CyLHIrfTQ+sz14=','10.0.0.31/24','8.8.8.8','1420','+jHagwWwKFUv/juiNYD0r8gypmMrcGHxUNwiuc9tc0s=','47.244.169.80:45184','0.0.0.0/0, ::0/0','25');
-INSERT INTO `ums_vpn_wireguard` VALUES ( '5', '0', '0', 'CHINA HANGKONG Line','2','mN389cyR8uCDYJ6v6/hC9LqNJiqZxxHRw93INnfCkWQ=','10.0.0.29/24','8.8.8.8','1420','+jHagwWwKFUv/juiNYD0r8gypmMrcGHxUNwiuc9tc0s=','47.244.169.80:45184','0.0.0.0/0, ::0/0','25');
-INSERT INTO `ums_vpn_wireguard` VALUES ( '6', '0', '0', 'INDONESIA Line','3','SMr5qW9jIR70Vi8sHhcpSeJc3S2Qu1VaEFq1yAimcFs=','10.77.77.22/32','8.8.8.8','1420','N1/ROyXTmoCRYgGG51R6XgeMv0wM3VTaPjzFS437GBc=','147.139.137.168:21892','0.0.0.0/0, ::0/0','25');
-INSERT INTO `ums_vpn_wireguard` VALUES ( '7', '0', '0', 'INDONESIA Line','3','oKJuvcA1g/jDkDlei6Ge6cf61WeZSSwvbFfxkNslg1k=','10.77.77.23/32','8.8.8.8','1420','N1/ROyXTmoCRYgGG51R6XgeMv0wM3VTaPjzFS437GBc=','147.139.137.168:21892','0.0.0.0/0, ::0/0','25');
-INSERT INTO `ums_vpn_wireguard` VALUES ( '8', '0', '0', 'INDONESIA Line','3','QNXZ0L7jQiOYv+gb8DEeX6eFMnzi8v6QeYaL5+IODnA=','10.77.77.24/32','8.8.8.8','1420','N1/ROyXTmoCRYgGG51R6XgeMv0wM3VTaPjzFS437GBc=','147.139.137.168:21892','0.0.0.0/0, ::0/0','25');
+INSERT INTO `ums_vpn_wireguard` VALUES ( '1', '0', '0', 'CHINA Line','1','0HvBmNS79bH8DTehScAsBznDlxRMDNKgShTIN6tYemU=','10.77.77.2/32','8.8.8.8','1420','fShlhFxOtwwBP5wL8RfvLFloiQL4WkZ6e3e1RYqrAnQ=','121.196.120.24:33649','0.0.0.0/0, ::0/0','25',null);
+INSERT INTO `ums_vpn_wireguard` VALUES ( '2', '0', '0', 'CHINA HANGKONG Line','2','oOhoIT9JMBFJ0qDoXNMLbfwHXUfT6OFR1kMc1Dfz/Ww=','10.0.0.30/24','8.8.8.8','1420','+jHagwWwKFUv/juiNYD0r8gypmMrcGHxUNwiuc9tc0s=','47.244.169.80:45184','0.0.0.0/0, ::0/0','25',null);
+INSERT INTO `ums_vpn_wireguard` VALUES ( '3', '0', '0', 'CHINA HANGKONG Line','2','QCFtvVpYgMMwojrRqVCpOH5XC7LY/H8a+8IoLPUclVg=','10.0.0.28/24','8.8.8.8','1420','+jHagwWwKFUv/juiNYD0r8gypmMrcGHxUNwiuc9tc0s=','47.244.169.80:45184','0.0.0.0/0, ::0/0','25',null);
+INSERT INTO `ums_vpn_wireguard` VALUES ( '4', '0', '0', 'CHINA HANGKONG Line','2','oHKc6znqFBXVVGB4AYhPMWY0b+w+2CyLHIrfTQ+sz14=','10.0.0.31/24','8.8.8.8','1420','+jHagwWwKFUv/juiNYD0r8gypmMrcGHxUNwiuc9tc0s=','47.244.169.80:45184','0.0.0.0/0, ::0/0','25',null);
+INSERT INTO `ums_vpn_wireguard` VALUES ( '5', '0', '0', 'CHINA HANGKONG Line','2','mN389cyR8uCDYJ6v6/hC9LqNJiqZxxHRw93INnfCkWQ=','10.0.0.29/24','8.8.8.8','1420','+jHagwWwKFUv/juiNYD0r8gypmMrcGHxUNwiuc9tc0s=','47.244.169.80:45184','0.0.0.0/0, ::0/0','25',null);
+INSERT INTO `ums_vpn_wireguard` VALUES ( '6', '0', '0', 'INDONESIA Line','3','SMr5qW9jIR70Vi8sHhcpSeJc3S2Qu1VaEFq1yAimcFs=','10.77.77.22/32','8.8.8.8','1420','N1/ROyXTmoCRYgGG51R6XgeMv0wM3VTaPjzFS437GBc=','147.139.137.168:21892','0.0.0.0/0, ::0/0','25',null);
+INSERT INTO `ums_vpn_wireguard` VALUES ( '7', '0', '0', 'INDONESIA Line','3','oKJuvcA1g/jDkDlei6Ge6cf61WeZSSwvbFfxkNslg1k=','10.77.77.23/32','8.8.8.8','1420','N1/ROyXTmoCRYgGG51R6XgeMv0wM3VTaPjzFS437GBc=','147.139.137.168:21892','0.0.0.0/0, ::0/0','25',null);
+INSERT INTO `ums_vpn_wireguard` VALUES ( '8', '0', '0', 'INDONESIA Line','3','QNXZ0L7jQiOYv+gb8DEeX6eFMnzi8v6QeYaL5+IODnA=','10.77.77.24/32','8.8.8.8','1420','N1/ROyXTmoCRYgGG51R6XgeMv0wM3VTaPjzFS437GBc=','147.139.137.168:21892','0.0.0.0/0, ::0/0','25',null);
 
 -- ----------------------------
 -- Records of ums_vpn_wireguard

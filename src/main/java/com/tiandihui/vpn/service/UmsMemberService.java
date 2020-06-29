@@ -29,7 +29,7 @@ public interface UmsMemberService {
      * 用户注册 直接注册
      */
     @Transactional
-    LoginSuccessInfo register(String username, String password, String deviceId,String deviceBrand);
+     LoginSuccessInfo register(String username, String password, String code ,String deviceId, String deviceBrand);
 
     /**
      * 生成验证码
@@ -40,7 +40,7 @@ public interface UmsMemberService {
      * 修改密码
      */
     @Transactional
-    void updatePassword(String telephone, String password, String authCode);
+    void updatePassword(String username, String password, String authCode);
 
 
     @Transactional
@@ -87,8 +87,16 @@ public interface UmsMemberService {
      int connected(int connectType, Long id);
 
     /**
+     * 断开连接
+     * @param connectType
+     * @param id
+     * @return
+     */
+    int disConnect(int connectType, Long id);
+
+    /**
      * 记录登录日志
      */
-     int  recLoginLog();
+     int  recLoginLog(String username);
 
 }

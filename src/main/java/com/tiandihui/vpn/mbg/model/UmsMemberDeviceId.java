@@ -15,6 +15,9 @@ public class UmsMemberDeviceId implements Serializable {
     @ApiModelProperty(value = "设备品牌名称")
     private String devicebrand;
 
+    @ApiModelProperty(value = "0->android1->ios2->pc")
+    private Integer platform;
+
     private static final long serialVersionUID = 1L;
 
     public Long getId() {
@@ -57,6 +60,14 @@ public class UmsMemberDeviceId implements Serializable {
         this.devicebrand = devicebrand;
     }
 
+    public Integer getPlatform() {
+        return platform;
+    }
+
+    public void setPlatform(Integer platform) {
+        this.platform = platform;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -68,6 +79,7 @@ public class UmsMemberDeviceId implements Serializable {
         sb.append(", memberId=").append(memberId);
         sb.append(", username=").append(username);
         sb.append(", devicebrand=").append(devicebrand);
+        sb.append(", platform=").append(platform);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

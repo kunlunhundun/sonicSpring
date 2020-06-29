@@ -80,9 +80,9 @@ public class VpnMemberInfoController {
             defaultValue = "1", allowableValues = "1,2,3",  dataType = "integer")
     @ResponseBody
     public CommonResult connected(@RequestParam(value = "connectType", defaultValue = "1") Integer connectType,
-                                         @RequestParam Long id) {
+                                         @RequestParam String id, @RequestParam String serviceId) {
 
-       int ret = memberService.connected(connectType,id);
+       int ret = memberService.connected(connectType, Long.valueOf(id));
         if (ret >= 0) {
             return  CommonResult.success(ret);
         }
@@ -91,14 +91,14 @@ public class VpnMemberInfoController {
 
 
     @ApiOperation("vpn断开成功")
-    @RequestMapping(value = "/disConnected",method = {RequestMethod.GET,RequestMethod.POST})
+    @RequestMapping(value = "/disConnect",method = {RequestMethod.GET,RequestMethod.POST})
     @ApiImplicitParam(name = "connectType", value = "1->ss；2->wireguard;3->openvpn",
             defaultValue = "1", allowableValues = "1,2,3",  dataType = "integer")
     @ResponseBody
-    public CommonResult disConnected(@RequestParam(value = "connectType", defaultValue = "1") Integer connectType,
-                                  @RequestParam Long id) {
+    public CommonResult disConnect(@RequestParam(value = "connectType", defaultValue = "1") Integer connectType,
+                                  @RequestParam String id, @RequestParam String serviceId) {
 
-        int ret = memberService.connected(connectType,id);
+        int ret = memberService.disConnect(connectType,Long.valueOf(id));
         if (ret >= 0) {
             return  CommonResult.success(ret);
         }

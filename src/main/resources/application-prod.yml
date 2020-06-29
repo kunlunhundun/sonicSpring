@@ -1,5 +1,13 @@
 server:
   port: 8080
+  ssl:
+    enabled: true
+    key-store: classpath:trustsonic.com.jks
+    key-store-password: i2z275rteb20hh
+    key-store-type: JKS
+
+#    key-store: classpath:trustsonic.com.jks
+
 
 spring:
   datasource:

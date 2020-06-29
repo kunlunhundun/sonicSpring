@@ -2,6 +2,7 @@ package com.tiandihui.cmd.mbg.model;
 
 import io.swagger.annotations.ApiModelProperty;
 import java.io.Serializable;
+import java.util.Date;
 
 public class UmsVpnWireguard implements Serializable {
     private Long id;
@@ -34,6 +35,9 @@ public class UmsVpnWireguard implements Serializable {
     private String allowedIps;
 
     private Long persistentKeepalive;
+
+    @ApiModelProperty(value = "更新状态时间")
+    private Date updateTime;
 
     private static final long serialVersionUID = 1L;
 
@@ -141,6 +145,14 @@ public class UmsVpnWireguard implements Serializable {
         this.persistentKeepalive = persistentKeepalive;
     }
 
+    public Date getUpdateTime() {
+        return updateTime;
+    }
+
+    public void setUpdateTime(Date updateTime) {
+        this.updateTime = updateTime;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -160,6 +172,7 @@ public class UmsVpnWireguard implements Serializable {
         sb.append(", endpoint=").append(endpoint);
         sb.append(", allowedIps=").append(allowedIps);
         sb.append(", persistentKeepalive=").append(persistentKeepalive);
+        sb.append(", updateTime=").append(updateTime);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

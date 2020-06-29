@@ -85,15 +85,22 @@ public class UmsVpnMachinesServiceImpl implements UmsVpnMachinesService {
        for (int i = 0; i< vpnServiceList.size(); i++) {
            UmsVpnService vpnService = vpnServiceList.get(i);
 
-           PageHelper.startPage(0, 2);
+           PageHelper.startPage(0, 10);
            UmsVpnWireguardExample wireguardExample = new UmsVpnWireguardExample();
            wireguardExample.createCriteria()
                    .andServiceIdEqualTo(vpnService.getId())
                    .andUseStatusEqualTo(0);
+           wireguardExample.setOrderByClause("update_time desc");
            List<UmsVpnWireguard> vpnWireguardList = vpnWireguardMapper.selectByExample(wireguardExample);
            Map<String,Object> map = new HashMap<String,Object>();
+           List<UmsVpnWireguard> tempList = new ArrayList<>();
+           if (vpnWireguardList.size() > 0) {
+               tempList.add(vpnWireguardList.get(0));
+           } else if (vpnWireguardList.size() > 1) {
+               tempList.add(vpnWireguardList.get(1));
+           }
            map.put("lineName",vpnService.getLineName());
-           map.put("wireguards",vpnWireguardList);
+           map.put("wireguards",tempList);
            lists.add(map);
        }
        return lists;

@@ -3,6 +3,15 @@ spring:
     active: dev #dev #默认为开发环境
 
 
+# 自定义redis key
+redis:
+  database: vpnserver
+  key:
+    serviceId: 'ums:serviceId'
+
+  expire:
+    common:  2592000   #24小时*30 登录token 30天的有效期
+
 mybatis:
   mapper-locations:
     - classpath:dao/*.xml

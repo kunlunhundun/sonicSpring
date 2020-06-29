@@ -5,6 +5,7 @@ import com.tiandihui.vpn.domain.MailInfo;
 import com.tiandihui.vpn.domain.OrderParam;
 import com.tiandihui.vpn.service.MailService;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,15 +21,18 @@ public class MailController {
     @Autowired
     MailService mailService;
 
-    @ApiOperation("根据购物车信息生成订单")
-    @RequestMapping(value = "/generateOrder", method = RequestMethod.POST)
+    @ApiOperation("通过邮件获取验证码")
+    @RequestMapping(value = "/sendCode", method = { RequestMethod.POST, RequestMethod.GET})
+    @ApiImplicitParam(name = "use", value = "1->register；2->forgetpassword;",
+            defaultValue = "1", allowableValues = "1,2",  dataType = "integer")
     @ResponseBody
-    public CommonResult sendEmail(@RequestParam String username) {
+    public CommonResult sendEmail(@RequestParam String username, @RequestParam int use) {
 
-        MailInfo mailInfo = new MailInfo();
-        mailInfo.setTo(username);
-        MailInfo result = mailService.sendMail(mailInfo);
-        return CommonResult.success(result, "下单成功");
+      //  MailInfo mailInfo = new MailInfo();
+       // mailInfo.setTo(username);
+
+        mailService.generateCode(username,use);
+        return CommonResult.success(null, "验证码发送成功");
     }
 
 

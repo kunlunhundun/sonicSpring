@@ -29,6 +29,17 @@ public interface UmsMemberCacheService {
      */
     String getAuthCode(String telephone);
 
+
+    /**
+     * 设置邮箱验证码
+     */
+    void setEmailAuthCode(String emailUser, String authCode);
+
+    /**
+     * 获取邮箱验证码
+     */
+    String getEmailAuthCode(String emailUser);
+
     /**
      * 设置过期日期
      */

@@ -18,6 +18,12 @@ public interface UmsVpnWireguardService {
     int update(UmsVpnWireguard vpnWireguard);
 
     /**
+     * 定时更新vpn 的状态
+     * @return
+     */
+    int updateConnectStatus();
+
+    /**
      * 删除一条ss线路
      */
 

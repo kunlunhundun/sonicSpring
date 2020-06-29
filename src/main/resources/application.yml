@@ -14,15 +14,6 @@ jwt:
   expiration: 604800 #JWT的超期限时间(60*60*24*7)
   tokenHead: Bearer  #JWT负载中拿到开头
 
-server:
-  port: 8080
-  ssl:
-    enabled: true
-    key-store: classpath:trustsonic.com.jks
-    key-store-password: i2z275rteb20hh
-    key-store-type: JKS
-
-#    key-store: classpath:trustsonic.com.jks
 
 secure:
   ignored:
@@ -40,6 +31,8 @@ secure:
       - /actuator/**
       - /sso/**
       - /home/**
+      - /mail/**
+      - /comment/**
 
 # 自定义redis key
 redis:
@@ -50,10 +43,11 @@ redis:
     member: 'ums:member'
     expireDay: 'ums:expireDay'
     expireToken: 'ums:expireToken'
-
+    emailAuthCode: 'ums:emailAuthCode'
 
   expire:
     authCode: 90 # 验证码超期时间
+    emailAuthCode: 180 # 邮箱验证码超期时间
     common: 86400 # 24小时
     logintoken: 2592000 # 24小时*30 登录token 30天的有效期
 

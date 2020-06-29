@@ -15,6 +15,7 @@
     <result column="endpoint" jdbcType="VARCHAR" property="endpoint" />
     <result column="allowed_ips" jdbcType="VARCHAR" property="allowedIps" />
     <result column="persistent_keepalive" jdbcType="BIGINT" property="persistentKeepalive" />
+    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -76,7 +77,7 @@
   </sql>
   <sql id="Base_Column_List">
     id, use_status, delete_status, line_name, service_id, privatekey, address, dns, mtu, 
-    publickey, endpoint, allowed_ips, persistent_keepalive
+    publickey, endpoint, allowed_ips, persistent_keepalive, update_time
   </sql>
   <select id="selectByExample" parameterType="com.tiandihui.cmd.mbg.model.UmsVpnWireguardExample" resultMap="BaseResultMap">
     select
@@ -115,13 +116,13 @@
     insert into ums_vpn_wireguard (use_status, delete_status, line_name, 
       service_id, privatekey, address, 
       dns, mtu, publickey, 
-      endpoint, allowed_ips, persistent_keepalive
-      )
+      endpoint, allowed_ips, persistent_keepalive, 
+      update_time)
     values (#{useStatus,jdbcType=INTEGER}, #{deleteStatus,jdbcType=INTEGER}, #{lineName,jdbcType=VARCHAR}, 
       #{serviceId,jdbcType=BIGINT}, #{privatekey,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, 
       #{dns,jdbcType=VARCHAR}, #{mtu,jdbcType=VARCHAR}, #{publickey,jdbcType=VARCHAR}, 
-      #{endpoint,jdbcType=VARCHAR}, #{allowedIps,jdbcType=VARCHAR}, #{persistentKeepalive,jdbcType=BIGINT}
-      )
+      #{endpoint,jdbcType=VARCHAR}, #{allowedIps,jdbcType=VARCHAR}, #{persistentKeepalive,jdbcType=BIGINT}, 
+      #{updateTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.tiandihui.cmd.mbg.model.UmsVpnWireguard">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
@@ -165,6 +166,9 @@
       <if test="persistentKeepalive != null">
         persistent_keepalive,
       </if>
+      <if test="updateTime != null">
+        update_time,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="useStatus != null">
@@ -202,6 +206,9 @@
       </if>
       <if test="persistentKeepalive != null">
         #{persistentKeepalive,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null">
+        #{updateTime,jdbcType=TIMESTAMP},
       </if>
     </trim>
   </insert>
@@ -253,6 +260,9 @@
       <if test="record.persistentKeepalive != null">
         persistent_keepalive = #{record.persistentKeepalive,jdbcType=BIGINT},
       </if>
+      <if test="record.updateTime != null">
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -272,7 +282,8 @@
       publickey = #{record.publickey,jdbcType=VARCHAR},
       endpoint = #{record.endpoint,jdbcType=VARCHAR},
       allowed_ips = #{record.allowedIps,jdbcType=VARCHAR},
-      persistent_keepalive = #{record.persistentKeepalive,jdbcType=BIGINT}
+      persistent_keepalive = #{record.persistentKeepalive,jdbcType=BIGINT},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -316,6 +327,9 @@
       <if test="persistentKeepalive != null">
         persistent_keepalive = #{persistentKeepalive,jdbcType=BIGINT},
       </if>
+      <if test="updateTime != null">
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -332,7 +346,8 @@
       publickey = #{publickey,jdbcType=VARCHAR},
       endpoint = #{endpoint,jdbcType=VARCHAR},
       allowed_ips = #{allowedIps,jdbcType=VARCHAR},
-      persistent_keepalive = #{persistentKeepalive,jdbcType=BIGINT}
+      persistent_keepalive = #{persistentKeepalive,jdbcType=BIGINT},
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

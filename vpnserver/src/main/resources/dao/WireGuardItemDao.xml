@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tiandihui.cmd.dao.WireGuardItemDao">
+    <insert id="insertList">
+        insert ignore into ums_vpn_wireguard (use_status, delete_status, line_name,
+        service_id, privatekey,
+        address, dns, mtu,
+        publickey, endpoint,
+        allowed_ips, persistent_keepalive, create_time,
+        update_Time) values
+        <foreach collection="list" item="item" separator="," index="index">
+            (#{item.useStatus,jdbcType=INT}, #{item.deleteStatus,jdbcType=INT}, #{item.lineName,jdbcType=VARCHAR},
+            #{item.serviceId,jdbcType=BIGINT}, #{item.privatekey,jdbcType=VARCHAR},
+            #{item.address,jdbcType=VARCHAR}, #{item.dns,jdbcType=VARCHAR}, #{item.mtu,jdbcType=VARCHAR},
+            #{item.publickey,jdbcType=VARCHAR}, #{item.endpoint,jdbcType=VARCHAR},
+            #{item.allowedIps,jdbcType=VARCHAR}, #{item.persistentKeepalive,jdbcType=VARCHAR},
+            #{item.createTime,jdbcType=TIMESTAMP},
+            #{item.updateTime,jdbcType=TIMESTAMP})
+        </foreach>
+    </insert>
+</mapper>

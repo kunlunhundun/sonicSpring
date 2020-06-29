@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tiandihui.vpn.dao.WireguardUpdateConnectDao">
+
+    <update id="updateConnectStatus">
+        update ums_vpn_wireguard wg
+        set use_status=0
+        WHERE
+        status = 1
+        AND update_time &lt; date_add(NOW(), INTERVAL -2 DAY);
+    </update>
+
+</mapper>

@@ -21,12 +21,16 @@ public class UmsMemberCacheServiceImpl implements UmsMemberCacheService {
     private Long REDIS_EXPIRE;
     @Value("${redis.expire.authCode}")
     private Long REDIS_EXPIRE_AUTH_CODE;
+    @Value("${redis.expire.emailAuthCode}")
+    private Long REDIS_EXPIRE_EMAIL_AUTH_CODE;
     @Value("${redis.expire.logintoken}")
     private Long REDIS_EXPIRE_LOGIN_TOKEN;
     @Value("${redis.key.member}")
     private String REDIS_KEY_MEMBER;
     @Value("${redis.key.authCode}")
     private String REDIS_KEY_AUTH_CODE;
+    @Value("${redis.key.emailAuthCode}")
+    private String REDIS_KEY_EMAIL_AUTH_CODE;
     @Value("${redis.key.expireDay}")
     private String REDIS_KEY_EXPIRE_DAY;
     @Value("${redis.key.expireToken}")
@@ -62,6 +66,19 @@ public class UmsMemberCacheServiceImpl implements UmsMemberCacheService {
     public String getAuthCode(String telephone) {
         String key = REDIS_DATABASE + ":" + REDIS_KEY_AUTH_CODE + ":" + telephone;
         return (String) redisService.get(key);
+    }
+
+
+    @Override
+    public void setEmailAuthCode(String emailUser, String authCode) {
+        String key = REDIS_DATABASE + ":" + REDIS_KEY_EMAIL_AUTH_CODE + ":" + emailUser;
+        redisService.set(key,authCode,REDIS_EXPIRE_EMAIL_AUTH_CODE);
+    }
+
+    @Override
+    public String getEmailAuthCode(String emailUser) {
+        String key = REDIS_DATABASE + ":" + REDIS_KEY_EMAIL_AUTH_CODE + ":" + emailUser;
+        return  (String)redisService.get(key);
     }
 
     @Override

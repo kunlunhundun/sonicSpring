@@ -13,13 +13,14 @@ public class UmsMemberFilterApp implements Serializable {
 
     private Date createTime;
 
-    @ApiModelProperty(value = "过滤app->1:不过滤->2:不允许哪些app->3允许哪些APP用{'type':'1','app':[',']}")
+    @ApiModelProperty(value = "过滤app->1:不过滤->2:不允许哪些app->3允许哪些APP用")
+    private String filterType;
+
+    @ApiModelProperty(value = "app名字逗号隔开")
     private String filterApp;
 
-    @ApiModelProperty(value = "登录类型：0->PC；1->android;2->ios;")
+    @ApiModelProperty(value = "登录类型：0->PC；1->android；->ios；")
     private Integer loginType;
-
-    private String loginMac;
 
     @ApiModelProperty(value = "用户登录的设备唯一号")
     private String deviceId;
@@ -58,6 +59,14 @@ public class UmsMemberFilterApp implements Serializable {
         this.createTime = createTime;
     }
 
+    public String getFilterType() {
+        return filterType;
+    }
+
+    public void setFilterType(String filterType) {
+        this.filterType = filterType;
+    }
+
     public String getFilterApp() {
         return filterApp;
     }
@@ -72,14 +81,6 @@ public class UmsMemberFilterApp implements Serializable {
 
     public void setLoginType(Integer loginType) {
         this.loginType = loginType;
-    }
-
-    public String getLoginMac() {
-        return loginMac;
-    }
-
-    public void setLoginMac(String loginMac) {
-        this.loginMac = loginMac;
     }
 
     public String getDeviceId() {
@@ -100,9 +101,9 @@ public class UmsMemberFilterApp implements Serializable {
         sb.append(", username=").append(username);
         sb.append(", memberId=").append(memberId);
         sb.append(", createTime=").append(createTime);
+        sb.append(", filterType=").append(filterType);
         sb.append(", filterApp=").append(filterApp);
         sb.append(", loginType=").append(loginType);
-        sb.append(", loginMac=").append(loginMac);
         sb.append(", deviceId=").append(deviceId);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");

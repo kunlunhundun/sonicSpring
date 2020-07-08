@@ -2,22 +2,21 @@ package com.tiandihui.vpn.common.api;
 
 public enum ResultCode implements IErrorCode {
 
-    SUCCESS(200,"操作成功"),
-    FAILED(500, "操作失败"),
-    VALIDATE_FAILED(404, "参数检验失败"),
-    UNAUTHORIZED(401, "暂未登录或token已经过期"),
-    FORBIDDEN(403, "没有相关权限"),
-    UNFINDUSER(1001, "找不到用户名"),
-    WRONGCODE(1002, "验证码不正确"),
-    TIMEOUTCODE(1003, "验证码超时，请重新发送"),
+    SUCCESS(200,"success"),
+    FAILED(500, "failed"),
+    VALIDATE_FAILED(404, "parameters is not correct "),
+    UNAUTHORIZED(401, "No login yet or token has expired"),
+    FORBIDDEN(403, "no permissions"),
+    UNFINDUSER(1001, "Username does not exist"),
+    WRONGCODE(1002, "the code is not correct"),
+    TIMEOUTCODE(1003, "code is timeout，please send again"),
 
-    WRONGPASSWORD(1004, "密码不正确"),
-    REPEATSENDCODE(1005, "验证码已经发送过，90S 后才能重新发送"),
-    RELOGINAGAIN(1006, "请重新登录，登录已经失效"),
+    WRONGPASSWORD(1004, "password is not correct"),
+    REPEATSENDCODE(1005, "the code have already to send，after 180S send again"),
+    RELOGINAGAIN(1006, "please login again，has expired"),
     UNFINDCOMMENT(1007, "找不到这条反馈问题的id"),
-    SINGLESIGNOUT(1008, "你已经在其他设备登录了"),
-    REPEATUSER(1009, "用户名已经注册过"),
-    ;
+    SINGLESIGNOUT(1008, "you are already logged in on another device"),
+    REPEATUSER(1009, "username is already exist");
 
 
 

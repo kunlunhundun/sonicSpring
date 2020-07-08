@@ -41,7 +41,6 @@ public class UmsMemberServiceImpl implements UmsMemberService {
 
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
-
     @Autowired
     private   UmsMemberMapper memberMapper;
     @Autowired
@@ -68,15 +67,15 @@ public class UmsMemberServiceImpl implements UmsMemberService {
 
     @Autowired
     UmsMemberLoginLogMapper loginLogMapper;
-
     @Autowired
     UmsMemberStatisticsInfoMapper statisticsInfoMapper;
-
     @Autowired
     UmsMemberDeviceIdMapper deviceIdMapper;
-
     @Autowired
     MailService mailService;
+    @Autowired
+    UmsMemberFilterAppMapper memberFilterAppMapper;
+
 
     @Override
     public UmsMember getByUsername(String username) {
@@ -295,7 +294,7 @@ public class UmsMemberServiceImpl implements UmsMemberService {
         if (umsMember != null) {
             return new MemberDetails(umsMember);
         }
-        throw  new UsernameNotFoundException("用户名或密码错误");
+        throw  new UsernameNotFoundException("Username has not been registered, please register first");
     }
 
 
@@ -303,8 +302,9 @@ public class UmsMemberServiceImpl implements UmsMemberService {
     public LoginSuccessInfo loginByToken(String username, String token) {
         LoginSuccessInfo successInfo = null;
         try {
-            UserDetails userDetails = loadUserByUsername(username);
+            long startTime = System.currentTimeMillis();
 
+            UserDetails userDetails = loadUserByUsername(username);
             ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
             HttpServletRequest request = attributes.getRequest();
             String osType = request.getHeader("OsType");
@@ -321,6 +321,10 @@ public class UmsMemberServiceImpl implements UmsMemberService {
                 }
                 throw new BadCredentialsException("token不正确或已失效,请重新登录");
             }
+            long endTime = System.currentTimeMillis();
+            long spendTime = endTime - startTime;
+            LOGGER.info("before handleLogin spendtime:" + spendTime);
+
             successInfo = handleLogin(userDetails);
 
         } catch (Exception e) {
@@ -335,7 +339,7 @@ public class UmsMemberServiceImpl implements UmsMemberService {
         try {
             UserDetails userDetails = loadUserByUsername(username);
             if (!password.equals(userDetails.getPassword())) {
-                throw new BadCredentialsException("密码不正确");
+                throw new BadCredentialsException("passwrod is not correct");
             }
             successInfo = handleLogin(userDetails);
 
@@ -390,6 +394,51 @@ public class UmsMemberServiceImpl implements UmsMemberService {
 
 
     @Override
+    public void filterApp(Integer filterType, String appName) {
+
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        HttpServletRequest request = attributes.getRequest();
+        String osType = request.getHeader("OsType");
+        String deviceId = request.getHeader("deviceId");
+        if (!(osType.equals("android") || osType.equals("ios") || osType.equals("pc"))){
+            // 需要传入平台参数
+            Asserts.fail(ResultCode.VALIDATE_FAILED);
+        }
+        int platform = 0;
+        if (osType.equals("android")) {
+            platform = 1;
+        } else  if (osType.equals("ios")) {
+            platform = 2;
+        }
+
+        UmsMember member = getCurrentMember();
+
+        UmsMemberFilterAppExample example = new UmsMemberFilterAppExample();
+        example.createCriteria().andUsernameEqualTo(member.getUsername()).andLoginTypeEqualTo(platform);
+        example.setOrderByClause("create_time desc");
+        List<UmsMemberFilterApp> filterAppList = memberFilterAppMapper.selectByExample(example);
+        if (!CollectionUtils.isEmpty(filterAppList)) {
+            UmsMemberFilterApp originFilterApp = filterAppList.get(0);
+            if (originFilterApp.getFilterApp().equals(appName)) {
+                return;
+            }
+        }
+
+        UmsMemberFilterApp filterApp = new UmsMemberFilterApp();
+        filterApp.setCreateTime(new Date());
+
+        filterApp.setUsername(member.getUsername());
+        filterApp.setMemberId(member.getId());
+        filterApp.setFilterType(String.valueOf(filterType));
+        filterApp.setFilterApp(appName);
+        filterApp.setLoginType(platform);
+        filterApp.setDeviceId(deviceId);
+       int count = memberFilterAppMapper.insert(filterApp);
+       LOGGER.info("memberFilterAppMapper insert count:" + count);
+
+    }
+
+    @Override
     public int recLoginLog(String username) {
 
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
@@ -406,7 +455,7 @@ public class UmsMemberServiceImpl implements UmsMemberService {
         String osType = request.getHeader("OsType");
         String address = "";
         if (remoteIp.length() > 2) {
-           address =  AddressUtils.getAddressFromIp(remoteIp);
+         //  address =  AddressUtils.getAddressFromIp(remoteIp);
         }
         int type = 0;
         if (osType.equals("android")) {
@@ -524,6 +573,8 @@ public class UmsMemberServiceImpl implements UmsMemberService {
 
     private LoginSuccessInfo handleLogin(UserDetails userDetails) {
 
+        long startTime = System.currentTimeMillis();
+
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         int newExpireDay = 0;
@@ -566,6 +617,10 @@ public class UmsMemberServiceImpl implements UmsMemberService {
         String token = null;
         token = jwtTokenUtil.generateToken(userDetails);
 
+        long endTime = System.currentTimeMillis();
+        long spendTime = endTime - startTime;
+        LOGGER.info("handleLogin in spendtime:" + spendTime);
+
         ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest request = attributes.getRequest();
         String osType = request.getHeader("OsType");
@@ -573,12 +628,18 @@ public class UmsMemberServiceImpl implements UmsMemberService {
             // 需要传入平台参数
             Asserts.fail(ResultCode.VALIDATE_FAILED);
         }
+
+
         memberCacheService.setLoginToken(member.getUsername()+osType,token);
-        UmsMember currentMember = getCurrentMember();
         LoginSuccessInfo successInfo = new LoginSuccessInfo();
-        BeanUtils.copyProperties(currentMember, successInfo);
+        BeanUtils.copyProperties(member, successInfo);
         successInfo.setToken(token);
         successInfo.setExpireDay(newExpireDay);
+
+        long endTime1 = System.currentTimeMillis();
+        long spendTime1 = endTime1 - startTime;
+        LOGGER.info("handleLogin in spendtime1:" + spendTime1);
+
         return successInfo;
     }
 

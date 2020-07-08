@@ -915,52 +915,52 @@ public class UmsVpnWireguardExample {
             return (Criteria) this;
         }
 
-        public Criteria andPersistentKeepaliveEqualTo(Long value) {
+        public Criteria andPersistentKeepaliveEqualTo(Integer value) {
             addCriterion("persistent_keepalive =", value, "persistentKeepalive");
             return (Criteria) this;
         }
 
-        public Criteria andPersistentKeepaliveNotEqualTo(Long value) {
+        public Criteria andPersistentKeepaliveNotEqualTo(Integer value) {
             addCriterion("persistent_keepalive <>", value, "persistentKeepalive");
             return (Criteria) this;
         }
 
-        public Criteria andPersistentKeepaliveGreaterThan(Long value) {
+        public Criteria andPersistentKeepaliveGreaterThan(Integer value) {
             addCriterion("persistent_keepalive >", value, "persistentKeepalive");
             return (Criteria) this;
         }
 
-        public Criteria andPersistentKeepaliveGreaterThanOrEqualTo(Long value) {
+        public Criteria andPersistentKeepaliveGreaterThanOrEqualTo(Integer value) {
             addCriterion("persistent_keepalive >=", value, "persistentKeepalive");
             return (Criteria) this;
         }
 
-        public Criteria andPersistentKeepaliveLessThan(Long value) {
+        public Criteria andPersistentKeepaliveLessThan(Integer value) {
             addCriterion("persistent_keepalive <", value, "persistentKeepalive");
             return (Criteria) this;
         }
 
-        public Criteria andPersistentKeepaliveLessThanOrEqualTo(Long value) {
+        public Criteria andPersistentKeepaliveLessThanOrEqualTo(Integer value) {
             addCriterion("persistent_keepalive <=", value, "persistentKeepalive");
             return (Criteria) this;
         }
 
-        public Criteria andPersistentKeepaliveIn(List<Long> values) {
+        public Criteria andPersistentKeepaliveIn(List<Integer> values) {
             addCriterion("persistent_keepalive in", values, "persistentKeepalive");
             return (Criteria) this;
         }
 
-        public Criteria andPersistentKeepaliveNotIn(List<Long> values) {
+        public Criteria andPersistentKeepaliveNotIn(List<Integer> values) {
             addCriterion("persistent_keepalive not in", values, "persistentKeepalive");
             return (Criteria) this;
         }
 
-        public Criteria andPersistentKeepaliveBetween(Long value1, Long value2) {
+        public Criteria andPersistentKeepaliveBetween(Integer value1, Integer value2) {
             addCriterion("persistent_keepalive between", value1, value2, "persistentKeepalive");
             return (Criteria) this;
         }
 
-        public Criteria andPersistentKeepaliveNotBetween(Long value1, Long value2) {
+        public Criteria andPersistentKeepaliveNotBetween(Integer value1, Integer value2) {
             addCriterion("persistent_keepalive not between", value1, value2, "persistentKeepalive");
             return (Criteria) this;
         }

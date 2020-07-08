@@ -1,7 +1,6 @@
 spring:
   profiles:
-    active: dev #dev #默认为开发环境
-
+    active: dev,gmail #dev #默认为开发环境
 
 # 自定义redis key
 redis:

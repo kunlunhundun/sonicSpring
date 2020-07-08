@@ -68,7 +68,7 @@ CREATE TABLE `cms_app_file` (
   `v` varchar(255) DEFAULT NULL COMMENT 'app版本号',
   `is_must_update` int(1) DEFAULT NULL COMMENT '0->正常更新1->强制更新',
   `create_time` datetime DEFAULT NULL,
-  `platform` int(1) DEFAULT NULL COMMENT '0->android1->ios2->pc',
+  `platform` int(1) DEFAULT NULL COMMENT '类型：0->PC；1->android；->ios；',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='官方回复表';
 
@@ -111,8 +111,6 @@ CREATE TABLE `ums_member` (
 -- ----------------------------
 -- Records of ums_member
 -- ----------------------------
-INSERT INTO `ums_member` VALUES ('1', '1', 'tianming', '$2a$10$fSo2BDPV8GeVYpPEylseHuYhw5QreqOXgVKSD89ho0NAfCQlysUR2', 'windir', '18061581849', '1', '2018-08-02 10:35:44', null, '1', '2009-06-01', '上海', '学生', 'test', null, '5000', null, null,'1');
-INSERT INTO `ums_member` VALUES ('3', '1', 'tiandao', '$2a$10$fSo2BDPV8GeVYpPEylseHuYhw5QreqOXgVKSD89ho0NAfCQlysUR2', 'windy', '18061581848', '1', '2018-08-03 16:46:38', null, '1', '2009-06-01', '上海', '学生', 'test', null, '5000', null, null,'1');
 
 
 -- ----------------------------
@@ -125,7 +123,7 @@ CREATE TABLE `ums_member_device_id` (
   `member_id` bigint(20) DEFAULT NULL,
   `username` varchar(100) DEFAULT NULL,
   `devicebrand` varchar(100) DEFAULT NULL COMMENT '设备品牌名称',
-  `platform` int(1) DEFAULT NULL COMMENT '0->android1->ios2->pc',
+  `platform` int(1) DEFAULT NULL COMMENT '登录类型：0->PC；1->android；->ios；',
   PRIMARY KEY (`id`),
   KEY `idx_device_id` (`device_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='设备唯一标识表根据此表可以查询使用过几台设备登录过';
@@ -172,9 +170,8 @@ CREATE TABLE `ums_member_login_log` (
   `service_ip` varchar(64) DEFAULT NULL COMMENT '连接选择的服务器ip',
   `city` varchar(64) DEFAULT NULL,
   `device_id` varchar(64) DEFAULT NULL COMMENT '用户的设备ID',
-  `login_type` int(1) DEFAULT NULL COMMENT '登录类型：0->PC；1->android;2->ios;',
+  `login_type` int(1) DEFAULT NULL COMMENT '登录类型：0->PC；1->android；->ios；',
   `login_mac` varchar(64) DEFAULT NULL,
-  `login_uid` varchar(64) DEFAULT NULL, 
   `connect_time`  datetime  DEFAULT NULL COMMENT '开始连接时间',
   `disconnect_time`  datetime  DEFAULT NULL COMMENT '断开时间',
   PRIMARY KEY (`id`)
@@ -183,6 +180,28 @@ CREATE TABLE `ums_member_login_log` (
 -- ----------------------------
 -- Records of ums_member_login_log
 -- ----------------------------
+
+
+-- ----------------------------
+-- Table structure for ums_member_login_log
+-- ----------------------------
+DROP TABLE IF EXISTS `ums_member_login_from_ip`;
+CREATE TABLE `ums_member_login_from_ip` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `username` varchar(64) DEFAULT NULL,
+  `member_id` bigint(20) DEFAULT NULL,
+  `create_time` datetime DEFAULT NULL,
+  `from_ip` varchar(64) DEFAULT NULL COMMENT '用户登录的目标IP',
+  `ip_location` varchar(64) DEFAULT NULL COMMENT '用户IP归属地',
+  `city` varchar(64) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_from_ip` (`from_ip`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='会员登录的ip';
+
+-- ----------------------------
+-- Records of ums_member_login_from_ip
+-- ----------------------------
+
 
 -- ----------------------------
 -- Table structure for ums_member_filter_app
@@ -193,9 +212,9 @@ CREATE TABLE `ums_member_filter_app` (
   `username` varchar(64) DEFAULT NULL,
   `member_id` bigint(20) DEFAULT NULL,
   `create_time` datetime DEFAULT NULL,
-  `filter_app` varchar(1000) DEFAULT NULL COMMENT '过滤app->1:不过滤->2:不允许哪些app->3允许哪些APP用{\"type\":\"1\",\"app\":['','']}',
-  `login_type` int(1) DEFAULT NULL COMMENT '登录类型：0->PC；1->android;2->ios;',
-  `login_mac` varchar(64) DEFAULT NULL,
+  `filter_type` varchar(64) DEFAULT NULL COMMENT '过滤app->1:不过滤->2:不允许哪些app->3允许哪些APP用',
+  `filter_app` varchar(1000) DEFAULT NULL COMMENT 'app名字逗号隔开',
+  `login_type` int(1)  DEFAULT  NULL  COMMENT '登录类型：0->PC；1->android；->ios；',
   `device_id` varchar(64) DEFAULT NULL COMMENT '用户登录的设备唯一号', 
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='会员登录记录';
@@ -306,8 +325,6 @@ CREATE TABLE `ums_vpn_service` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='vpn->ss数据库';
 
 INSERT INTO `ums_vpn_service` VALUES ( '1', 'china hangzhou Line', '0', '0','98.142.138.64', '阿里云', '杭州', '杭州', '杭州');
-INSERT INTO `ums_vpn_service` VALUES ( '2', 'china hangkong Line', '0', '0','47.244.169.80', '阿里云', '杭州', '杭州', '杭州');
-INSERT INTO `ums_vpn_service` VALUES ( '3', 'Indonesia Line',      '0', '0','147.139.137.168', '亚马逊云', 'Indonesia', 'Indonesia', 'Indonesia');
 
 -- ----------------------------
 -- Records of ums_vpn_service
@@ -337,13 +354,6 @@ CREATE TABLE `ums_vpn_wireguard` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='vpn->wireguard数据库';
 
 INSERT INTO `ums_vpn_wireguard` VALUES ( '1', '0', '0', 'CHINA Line','1','0HvBmNS79bH8DTehScAsBznDlxRMDNKgShTIN6tYemU=','10.77.77.2/32','8.8.8.8','1420','fShlhFxOtwwBP5wL8RfvLFloiQL4WkZ6e3e1RYqrAnQ=','121.196.120.24:33649','0.0.0.0/0, ::0/0','25',null);
-INSERT INTO `ums_vpn_wireguard` VALUES ( '2', '0', '0', 'CHINA HANGKONG Line','2','oOhoIT9JMBFJ0qDoXNMLbfwHXUfT6OFR1kMc1Dfz/Ww=','10.0.0.30/24','8.8.8.8','1420','+jHagwWwKFUv/juiNYD0r8gypmMrcGHxUNwiuc9tc0s=','47.244.169.80:45184','0.0.0.0/0, ::0/0','25',null);
-INSERT INTO `ums_vpn_wireguard` VALUES ( '3', '0', '0', 'CHINA HANGKONG Line','2','QCFtvVpYgMMwojrRqVCpOH5XC7LY/H8a+8IoLPUclVg=','10.0.0.28/24','8.8.8.8','1420','+jHagwWwKFUv/juiNYD0r8gypmMrcGHxUNwiuc9tc0s=','47.244.169.80:45184','0.0.0.0/0, ::0/0','25',null);
-INSERT INTO `ums_vpn_wireguard` VALUES ( '4', '0', '0', 'CHINA HANGKONG Line','2','oHKc6znqFBXVVGB4AYhPMWY0b+w+2CyLHIrfTQ+sz14=','10.0.0.31/24','8.8.8.8','1420','+jHagwWwKFUv/juiNYD0r8gypmMrcGHxUNwiuc9tc0s=','47.244.169.80:45184','0.0.0.0/0, ::0/0','25',null);
-INSERT INTO `ums_vpn_wireguard` VALUES ( '5', '0', '0', 'CHINA HANGKONG Line','2','mN389cyR8uCDYJ6v6/hC9LqNJiqZxxHRw93INnfCkWQ=','10.0.0.29/24','8.8.8.8','1420','+jHagwWwKFUv/juiNYD0r8gypmMrcGHxUNwiuc9tc0s=','47.244.169.80:45184','0.0.0.0/0, ::0/0','25',null);
-INSERT INTO `ums_vpn_wireguard` VALUES ( '6', '0', '0', 'INDONESIA Line','3','SMr5qW9jIR70Vi8sHhcpSeJc3S2Qu1VaEFq1yAimcFs=','10.77.77.22/32','8.8.8.8','1420','N1/ROyXTmoCRYgGG51R6XgeMv0wM3VTaPjzFS437GBc=','147.139.137.168:21892','0.0.0.0/0, ::0/0','25',null);
-INSERT INTO `ums_vpn_wireguard` VALUES ( '7', '0', '0', 'INDONESIA Line','3','oKJuvcA1g/jDkDlei6Ge6cf61WeZSSwvbFfxkNslg1k=','10.77.77.23/32','8.8.8.8','1420','N1/ROyXTmoCRYgGG51R6XgeMv0wM3VTaPjzFS437GBc=','147.139.137.168:21892','0.0.0.0/0, ::0/0','25',null);
-INSERT INTO `ums_vpn_wireguard` VALUES ( '8', '0', '0', 'INDONESIA Line','3','QNXZ0L7jQiOYv+gb8DEeX6eFMnzi8v6QeYaL5+IODnA=','10.77.77.24/32','8.8.8.8','1420','N1/ROyXTmoCRYgGG51R6XgeMv0wM3VTaPjzFS437GBc=','147.139.137.168:21892','0.0.0.0/0, ::0/0','25',null);
 
 -- ----------------------------
 -- Records of ums_vpn_wireguard
@@ -371,7 +381,6 @@ CREATE TABLE `ums_vpn_ss` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='vpn->ss数据库';
 
 INSERT INTO `ums_vpn_ss` VALUES ( '1', 'USA Line', '0', '0', '1','98.142.138.64','19999','hello','18','8','','2','');
-INSERT INTO `ums_vpn_ss` VALUES ( '2', 'China Line', '0', '0', '1','98.142.138.64','19999','hello','18','8','','2','');
 
 
 -- ----------------------------
@@ -439,7 +448,6 @@ CREATE TABLE `ums_product` (
 
 
 INSERT INTO `ums_product` VALUES ('20','1','普通vip', 'No86577', '0', '1', '1', '1', '2', '30.00', '30.00', '30.00','包月','','',null,null);
-INSERT INTO `ums_product` VALUES ('50','1','超级vip', 'No86578', '0', '1', '1', '1', '2', '30.00', '30.00', '30.00','包月','','',null,null);
 
 -- ----------------------------
 -- Table structure for ums_product
@@ -466,20 +474,6 @@ CREATE TABLE `pms_sku_stock` (
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='sku的库存';
 
 INSERT INTO `pms_sku_stock` VALUES ('1', '20', '202005070027001', '30.00', '100', null, null, null, null, '0', '1一个月','');
-INSERT INTO `pms_sku_stock` VALUES ('2', '20', '202005070027002', '60', '100', null, null, null, null, '0', '2个月','');
-INSERT INTO `pms_sku_stock` VALUES ('3', '20', '202005070027003', '80', '100', null, null, null, null, '0', '连续包季','');
-INSERT INTO `pms_sku_stock` VALUES ('4', '20', '202005070027004', '110', '100', null, null, null, null, '0', '4个月','');
-INSERT INTO `pms_sku_stock` VALUES ('5', '20', '202005070027005', '140', '100', null, null, null, null, '0', '5个月','');
-INSERT INTO `pms_sku_stock` VALUES ('6', '20', '202005070027006', '160', '100', null, null, null, null, '0', '半年','');
-INSERT INTO `pms_sku_stock` VALUES ('7', '20', '202005070027007', '300', '100', null, null, null, null, '0', '连续包年12个月','');
-
-INSERT INTO `pms_sku_stock` VALUES ('21', '50', '202005070028001', '40.00', '100', null, null, null, null, '0', '1一个月','');
-INSERT INTO `pms_sku_stock` VALUES ('22', '50', '202005070028002', '80', '100', null, null, null, null, '0', '2个月','');
-INSERT INTO `pms_sku_stock` VALUES ('23', '50', '202005070028003', '110', '100', null, null, null, null, '0', '连续包季','');
-INSERT INTO `pms_sku_stock` VALUES ('24', '50', '202005070028004', '150', '100', null, null, null, null, '0', '4个月','');
-INSERT INTO `pms_sku_stock` VALUES ('25', '50', '202005070028005', '180', '100', null, null, null, null, '0', '5个月','');
-INSERT INTO `pms_sku_stock` VALUES ('26', '50', '202005070028006', '210', '100', null, null, null, null, '0', '半年','');
-INSERT INTO `pms_sku_stock` VALUES ('27', '50', '202005070028007', '400', '100', null, null, null, null, '0', '连续包年12个月','');
 
 -- ----------------------------
 -- Table structure for pms_sku_stock
@@ -625,8 +619,6 @@ CREATE TABLE `ums_member_receive_address` (
 -- Records of ums_member_receive_address
 -- ----------------------------
 INSERT INTO `ums_member_receive_address` VALUES ('1', '1', 'tianming', '18033441849', '0', '518000', '广东省', '深圳市', '南山区', '科兴科学园');
-INSERT INTO `ums_member_receive_address` VALUES ('3', '1', 'tianming', '18033441849', '0', '518000', '广东省', '深圳市', '福田区', '清水河街道');
-INSERT INTO `ums_member_receive_address` VALUES ('4', '1', 'tianming', '18033441849', '1', '518000', '广东省', '深圳市', '福田区', '东晓街道');
 
 
 

@@ -1,20 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.tiandihui.vpn.mbg.mapper.UmsMemberLoginLogMapper">
-  <resultMap id="BaseResultMap" type="com.tiandihui.vpn.mbg.model.UmsMemberLoginLog">
+<mapper namespace="com.tiandihui.vpn.mbg.mapper.UmsMemberLoginFromIpMapper">
+  <resultMap id="BaseResultMap" type="com.tiandihui.vpn.mbg.model.UmsMemberLoginFromIp">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="username" jdbcType="VARCHAR" property="username" />
     <result column="member_id" jdbcType="BIGINT" property="memberId" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="from_ip" jdbcType="VARCHAR" property="fromIp" />
     <result column="ip_location" jdbcType="VARCHAR" property="ipLocation" />
-    <result column="service_ip" jdbcType="VARCHAR" property="serviceIp" />
     <result column="city" jdbcType="VARCHAR" property="city" />
-    <result column="device_id" jdbcType="VARCHAR" property="deviceId" />
-    <result column="login_type" jdbcType="INTEGER" property="loginType" />
-    <result column="login_mac" jdbcType="VARCHAR" property="loginMac" />
-    <result column="connect_time" jdbcType="TIMESTAMP" property="connectTime" />
-    <result column="disconnect_time" jdbcType="TIMESTAMP" property="disconnectTime" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -75,16 +69,15 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, username, member_id, create_time, from_ip, ip_location, service_ip, city, device_id, 
-    login_type, login_mac, connect_time, disconnect_time
+    id, username, member_id, create_time, from_ip, ip_location, city
   </sql>
-  <select id="selectByExample" parameterType="com.tiandihui.vpn.mbg.model.UmsMemberLoginLogExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.tiandihui.vpn.mbg.model.UmsMemberLoginFromIpExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from ums_member_login_log
+    from ums_member_login_from_ip
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -95,39 +88,35 @@
   <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
     select 
     <include refid="Base_Column_List" />
-    from ums_member_login_log
+    from ums_member_login_from_ip
     where id = #{id,jdbcType=BIGINT}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from ums_member_login_log
+    delete from ums_member_login_from_ip
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <delete id="deleteByExample" parameterType="com.tiandihui.vpn.mbg.model.UmsMemberLoginLogExample">
-    delete from ums_member_login_log
+  <delete id="deleteByExample" parameterType="com.tiandihui.vpn.mbg.model.UmsMemberLoginFromIpExample">
+    delete from ums_member_login_from_ip
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.tiandihui.vpn.mbg.model.UmsMemberLoginLog">
+  <insert id="insert" parameterType="com.tiandihui.vpn.mbg.model.UmsMemberLoginFromIp">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into ums_member_login_log (username, member_id, create_time, 
-      from_ip, ip_location, service_ip, 
-      city, device_id, login_type, 
-      login_mac, connect_time, disconnect_time
+    insert into ums_member_login_from_ip (username, member_id, create_time, 
+      from_ip, ip_location, city
       )
     values (#{username,jdbcType=VARCHAR}, #{memberId,jdbcType=BIGINT}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{fromIp,jdbcType=VARCHAR}, #{ipLocation,jdbcType=VARCHAR}, #{serviceIp,jdbcType=VARCHAR}, 
-      #{city,jdbcType=VARCHAR}, #{deviceId,jdbcType=VARCHAR}, #{loginType,jdbcType=INTEGER}, 
-      #{loginMac,jdbcType=VARCHAR}, #{connectTime,jdbcType=TIMESTAMP}, #{disconnectTime,jdbcType=TIMESTAMP}
+      #{fromIp,jdbcType=VARCHAR}, #{ipLocation,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.tiandihui.vpn.mbg.model.UmsMemberLoginLog">
+  <insert id="insertSelective" parameterType="com.tiandihui.vpn.mbg.model.UmsMemberLoginFromIp">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
       SELECT LAST_INSERT_ID()
     </selectKey>
-    insert into ums_member_login_log
+    insert into ums_member_login_from_ip
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="username != null">
         username,
@@ -144,26 +133,8 @@
       <if test="ipLocation != null">
         ip_location,
       </if>
-      <if test="serviceIp != null">
-        service_ip,
-      </if>
       <if test="city != null">
         city,
-      </if>
-      <if test="deviceId != null">
-        device_id,
-      </if>
-      <if test="loginType != null">
-        login_type,
-      </if>
-      <if test="loginMac != null">
-        login_mac,
-      </if>
-      <if test="connectTime != null">
-        connect_time,
-      </if>
-      <if test="disconnectTime != null">
-        disconnect_time,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -182,37 +153,19 @@
       <if test="ipLocation != null">
         #{ipLocation,jdbcType=VARCHAR},
       </if>
-      <if test="serviceIp != null">
-        #{serviceIp,jdbcType=VARCHAR},
-      </if>
       <if test="city != null">
         #{city,jdbcType=VARCHAR},
       </if>
-      <if test="deviceId != null">
-        #{deviceId,jdbcType=VARCHAR},
-      </if>
-      <if test="loginType != null">
-        #{loginType,jdbcType=INTEGER},
-      </if>
-      <if test="loginMac != null">
-        #{loginMac,jdbcType=VARCHAR},
-      </if>
-      <if test="connectTime != null">
-        #{connectTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="disconnectTime != null">
-        #{disconnectTime,jdbcType=TIMESTAMP},
-      </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.tiandihui.vpn.mbg.model.UmsMemberLoginLogExample" resultType="java.lang.Integer">
-    select count(*) from ums_member_login_log
+  <select id="countByExample" parameterType="com.tiandihui.vpn.mbg.model.UmsMemberLoginFromIpExample" resultType="java.lang.Integer">
+    select count(*) from ums_member_login_from_ip
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update ums_member_login_log
+    update ums_member_login_from_ip
     <set>
       <if test="record.id != null">
         id = #{record.id,jdbcType=BIGINT},
@@ -232,26 +185,8 @@
       <if test="record.ipLocation != null">
         ip_location = #{record.ipLocation,jdbcType=VARCHAR},
       </if>
-      <if test="record.serviceIp != null">
-        service_ip = #{record.serviceIp,jdbcType=VARCHAR},
-      </if>
       <if test="record.city != null">
         city = #{record.city,jdbcType=VARCHAR},
-      </if>
-      <if test="record.deviceId != null">
-        device_id = #{record.deviceId,jdbcType=VARCHAR},
-      </if>
-      <if test="record.loginType != null">
-        login_type = #{record.loginType,jdbcType=INTEGER},
-      </if>
-      <if test="record.loginMac != null">
-        login_mac = #{record.loginMac,jdbcType=VARCHAR},
-      </if>
-      <if test="record.connectTime != null">
-        connect_time = #{record.connectTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="record.disconnectTime != null">
-        disconnect_time = #{record.disconnectTime,jdbcType=TIMESTAMP},
       </if>
     </set>
     <if test="_parameter != null">
@@ -259,26 +194,20 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update ums_member_login_log
+    update ums_member_login_from_ip
     set id = #{record.id,jdbcType=BIGINT},
       username = #{record.username,jdbcType=VARCHAR},
       member_id = #{record.memberId,jdbcType=BIGINT},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       from_ip = #{record.fromIp,jdbcType=VARCHAR},
       ip_location = #{record.ipLocation,jdbcType=VARCHAR},
-      service_ip = #{record.serviceIp,jdbcType=VARCHAR},
-      city = #{record.city,jdbcType=VARCHAR},
-      device_id = #{record.deviceId,jdbcType=VARCHAR},
-      login_type = #{record.loginType,jdbcType=INTEGER},
-      login_mac = #{record.loginMac,jdbcType=VARCHAR},
-      connect_time = #{record.connectTime,jdbcType=TIMESTAMP},
-      disconnect_time = #{record.disconnectTime,jdbcType=TIMESTAMP}
+      city = #{record.city,jdbcType=VARCHAR}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.tiandihui.vpn.mbg.model.UmsMemberLoginLog">
-    update ums_member_login_log
+  <update id="updateByPrimaryKeySelective" parameterType="com.tiandihui.vpn.mbg.model.UmsMemberLoginFromIp">
+    update ums_member_login_from_ip
     <set>
       <if test="username != null">
         username = #{username,jdbcType=VARCHAR},
@@ -295,44 +224,20 @@
       <if test="ipLocation != null">
         ip_location = #{ipLocation,jdbcType=VARCHAR},
       </if>
-      <if test="serviceIp != null">
-        service_ip = #{serviceIp,jdbcType=VARCHAR},
-      </if>
       <if test="city != null">
         city = #{city,jdbcType=VARCHAR},
-      </if>
-      <if test="deviceId != null">
-        device_id = #{deviceId,jdbcType=VARCHAR},
-      </if>
-      <if test="loginType != null">
-        login_type = #{loginType,jdbcType=INTEGER},
-      </if>
-      <if test="loginMac != null">
-        login_mac = #{loginMac,jdbcType=VARCHAR},
-      </if>
-      <if test="connectTime != null">
-        connect_time = #{connectTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="disconnectTime != null">
-        disconnect_time = #{disconnectTime,jdbcType=TIMESTAMP},
       </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.tiandihui.vpn.mbg.model.UmsMemberLoginLog">
-    update ums_member_login_log
+  <update id="updateByPrimaryKey" parameterType="com.tiandihui.vpn.mbg.model.UmsMemberLoginFromIp">
+    update ums_member_login_from_ip
     set username = #{username,jdbcType=VARCHAR},
       member_id = #{memberId,jdbcType=BIGINT},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       from_ip = #{fromIp,jdbcType=VARCHAR},
       ip_location = #{ipLocation,jdbcType=VARCHAR},
-      service_ip = #{serviceIp,jdbcType=VARCHAR},
-      city = #{city,jdbcType=VARCHAR},
-      device_id = #{deviceId,jdbcType=VARCHAR},
-      login_type = #{loginType,jdbcType=INTEGER},
-      login_mac = #{loginMac,jdbcType=VARCHAR},
-      connect_time = #{connectTime,jdbcType=TIMESTAMP},
-      disconnect_time = #{disconnectTime,jdbcType=TIMESTAMP}
+      city = #{city,jdbcType=VARCHAR}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

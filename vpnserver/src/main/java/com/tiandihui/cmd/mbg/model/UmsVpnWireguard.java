@@ -34,7 +34,7 @@ public class UmsVpnWireguard implements Serializable {
 
     private String allowedIps;
 
-    private Long persistentKeepalive;
+    private Integer persistentKeepalive;
 
     @ApiModelProperty(value = "更新状态时间")
     private Date updateTime;
@@ -137,11 +137,11 @@ public class UmsVpnWireguard implements Serializable {
         this.allowedIps = allowedIps;
     }
 
-    public Long getPersistentKeepalive() {
+    public Integer getPersistentKeepalive() {
         return persistentKeepalive;
     }
 
-    public void setPersistentKeepalive(Long persistentKeepalive) {
+    public void setPersistentKeepalive(Integer persistentKeepalive) {
         this.persistentKeepalive = persistentKeepalive;
     }
 

@@ -15,7 +15,7 @@ public class UmsMemberDeviceId implements Serializable {
     @ApiModelProperty(value = "设备品牌名称")
     private String devicebrand;
 
-    @ApiModelProperty(value = "0->android1->ios2->pc")
+    @ApiModelProperty(value = "登录类型：0->PC；1->android；->ios；")
     private Integer platform;
 
     private static final long serialVersionUID = 1L;

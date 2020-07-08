@@ -99,4 +99,9 @@ public interface UmsMemberService {
      */
      int  recLoginLog(String username);
 
+    /**
+     * 客户选择了那些app
+     */
+    void filterApp(Integer filterType, String appName);
+
 }

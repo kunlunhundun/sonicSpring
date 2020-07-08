@@ -1,6 +1,7 @@
 package com.tiandihui.vpn.controller;
 
 import com.tiandihui.vpn.common.api.CommonResult;
+import com.tiandihui.vpn.common.api.ResultCode;
 import com.tiandihui.vpn.domain.LoginRquestParam;
 import com.tiandihui.vpn.domain.LoginSuccessInfo;
 import com.tiandihui.vpn.service.UmsMemberService;
@@ -73,7 +74,7 @@ public class VpnMemberController {
                                      @RequestParam String loginToken) {
         LoginSuccessInfo successInfo = memberService.loginByToken(username, loginToken);
         if (successInfo == null) {
-            return CommonResult.validateFailed("用户名或密码错误");
+            return CommonResult.failedResult(ResultCode.RELOGINAGAIN);
         }
         successInfo.setTokenHead(tokenHead);
         memberService.recLoginLog(username);

@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -84,9 +85,8 @@ public class VpnConnectStatusServiceImpl implements VpnConnectStatusService {
             Asserts.fail("serviceid is empty  ,先导入服务，再导入用户数据");
             return ;
         }
-
         String lsDir = "ls /etc/wireguard";
-        lsDir = "ls ";
+        //lsDir = "ls /Users/ward.y/www/wireguardconf";
         ExecuteResult executeResult = localCommandExecutor.executeCommand(lsDir, 2000);
         String content = executeResult.getExecuteOut();
         String[] contentArr = content.split("\n");
@@ -102,39 +102,48 @@ public class VpnConnectStatusServiceImpl implements VpnConnectStatusService {
                 vpnWireguard.setDeleteStatus(0);
                 vpnWireguard.setUseStatus(0);
                 vpnWireguard.setServiceId(Long.valueOf(serviceId));
+                vpnWireguard.setUpdateTime(new Date());
                 arrayList.add(vpnWireguard);
 
-                String newCmd = "cat  " + noEnterLine;
+                String newCmd = "cat  " + "/etc/wireguard/" + noEnterLine;
+               // newCmd = "cat  " + "/Users/ward.y/www/wireguardconf/" + noEnterLine;
                 ExecuteResult vpnResult = localCommandExecutor.executeCommand(newCmd, 2000);
+
                 String[] peerContentArr = vpnResult.getExecuteOut().split("\n");
                 for (int j = 0; j < peerContentArr.length; j++) {
                     String peerContentLine = peerContentArr[j];
                     String noPeerEnterLine = StringUtils.replaceEnter(peerContentLine);
                     String noPeerStrimLine = noPeerEnterLine.trim();
-                    String[] lineArr = noPeerStrimLine.split(":");
-                    if (lineArr.length > 1) {
-                        if (lineArr[0].contains("PrivateKey")) {
-                            vpnWireguard.setPrivatekey(lineArr[1]);
-                        } else if (lineArr[0].contains("Address")) {
-                            vpnWireguard.setAddress(lineArr[1]);
-                        } else if (lineArr[0].contains("DNS")) {
-                            vpnWireguard.setDns(lineArr[1]);
-                        } else if (lineArr[0].contains("MTU")) {
-                            vpnWireguard.setMtu(lineArr[1]);
-                        } else if (lineArr[0].contains("PublicKey")) {
-                            vpnWireguard.setPublickey(lineArr[1]);
-                        } else if (lineArr[0].contains("Endpoint")) {
-                            vpnWireguard.setEndpoint(lineArr[1]);
-                        } else if (lineArr[0].contains("AllowedIPs")) {
-                            String allowedIps = lineArr[1];
+                    int firstEq =  noPeerStrimLine.indexOf("=");
+                    if (firstEq < 1) {
+                        continue;
+                    }
+                    String secondStr = noPeerStrimLine.substring(firstEq+1);
+                    String  firstStr = noPeerStrimLine.substring(0,firstEq);
+
+                    if (secondStr.length() > 1) {
+                        if (noPeerStrimLine.contains("PrivateKey")) {
+                            vpnWireguard.setPrivatekey(secondStr);
+                        } else if (noPeerStrimLine.contains("Address")) {
+                            vpnWireguard.setAddress(secondStr);
+                        } else if (noPeerStrimLine.contains("DNS")) {
+                            vpnWireguard.setDns(secondStr);
+                        } else if (noPeerStrimLine.contains("MTU")) {
+                            vpnWireguard.setMtu(secondStr);
+                        } else if (noPeerStrimLine.contains("PublicKey")) {
+                            vpnWireguard.setPublickey(secondStr);
+                        } else if (noPeerStrimLine.contains("Endpoint")) {
+                            vpnWireguard.setEndpoint(secondStr);
+                        } else if (noPeerStrimLine.contains("AllowedIPs")) {
+                            String allowedIps = secondStr;
                             vpnWireguard.setAllowedIps("0.0.0.0/0, ::0/0");
                             int index =  allowedIps.indexOf("::");
                             StringBuilder allowedIpBuilder = new StringBuilder(allowedIps);
-                            allowedIpBuilder.indexOf(" ",index);
+                             allowedIpBuilder.insert(index," ");
                             vpnWireguard.setAllowedIps(allowedIpBuilder.toString());
 
-                        } else if (lineArr[0].contains("PersistentKeepalive")) {
-                            vpnWireguard.setPersistentKeepalive(Long.valueOf(lineArr[1]));
+                        } else if (noPeerStrimLine.contains("PersistentKeepalive")) {
+                            vpnWireguard.setPersistentKeepalive(Integer.valueOf(secondStr));
                         }
                     }
                 } //for j

@@ -1,7 +1,15 @@
-
 spring:
+  servlet:
+    multipart:
+      enabled: true #开启文件上传
+      max-file-size: 100MB #限制文件上传大小为10M
+      max-request-size: 100MB
+      file-size-threshold: 100MB
   profiles:
     active: dev,gmail #dev #默认为开发环境
+
+java:
+  compile: none
 
 mybatis:
   mapper-locations:
@@ -33,6 +41,8 @@ secure:
       - /home/**
       - /mail/**
       - /comment/**
+      - /update/**
+      - /minio/**
 
 # 自定义redis key
 redis:
@@ -50,6 +60,13 @@ redis:
     emailAuthCode: 180 # 邮箱验证码超期时间
     common: 86400 # 24小时
     logintoken: 2592000 # 24小时*30 登录token 30天的有效期
+
+
+minio:
+  endpoint: http://localhost:9000 #MinIO服务所在地址
+  bucketName: vpn #存储桶名称
+  accessKey: minioadmin #访问的key
+  secretKey: minioadmin #访问的秘钥
 
 
 # 消息队列定义

@@ -2,8 +2,8 @@ spring:
   mail:
     host: smtp.gmail.com #SMTP服务器地址
     port: 465    #587
-    username: service@siriusvpn.com #登陆账号
-    password: asian4you #登陆密码（或授权码）
+    username: service@siriusvpn.com   #kunlunhundun@gmail.com    #kunlunhundun #登陆账号
+    password: asian4you  #登陆密码（或授权码）
     properties:
       from: service@siriusvpn.com #邮件发信人（即真实邮箱）
 

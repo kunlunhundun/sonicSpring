@@ -6,15 +6,14 @@
         service_id, privatekey,
         address, dns, mtu,
         publickey, endpoint,
-        allowed_ips, persistent_keepalive, create_time,
+        allowed_ips, persistent_keepalive,
         update_Time) values
         <foreach collection="list" item="item" separator="," index="index">
-            (#{item.useStatus,jdbcType=INT}, #{item.deleteStatus,jdbcType=INT}, #{item.lineName,jdbcType=VARCHAR},
+            (#{item.useStatus,jdbcType=INTEGER}, #{item.deleteStatus,jdbcType=INTEGER}, #{item.lineName,jdbcType=VARCHAR},
             #{item.serviceId,jdbcType=BIGINT}, #{item.privatekey,jdbcType=VARCHAR},
             #{item.address,jdbcType=VARCHAR}, #{item.dns,jdbcType=VARCHAR}, #{item.mtu,jdbcType=VARCHAR},
             #{item.publickey,jdbcType=VARCHAR}, #{item.endpoint,jdbcType=VARCHAR},
-            #{item.allowedIps,jdbcType=VARCHAR}, #{item.persistentKeepalive,jdbcType=VARCHAR},
-            #{item.createTime,jdbcType=TIMESTAMP},
+            #{item.allowedIps,jdbcType=VARCHAR}, #{item.persistentKeepalive,jdbcType=INTEGER},
             #{item.updateTime,jdbcType=TIMESTAMP})
         </foreach>
     </insert>

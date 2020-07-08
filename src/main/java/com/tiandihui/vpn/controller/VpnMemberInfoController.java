@@ -12,6 +12,7 @@ import com.tiandihui.vpn.service.UmsVpnWireguardService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -103,6 +104,20 @@ public class VpnMemberInfoController {
             return  CommonResult.success(ret);
         }
         return  CommonResult.failed();
+    }
+
+    @ApiOperation("vpn断开成功")
+    @RequestMapping(value = "/filterApp",method = {RequestMethod.GET,RequestMethod.POST})
+    @ApiImplicitParam(name = "filterType", value = "1->all app；2->black app;3->allow app",
+            defaultValue = "1", allowableValues = "1,2,3",  dataType = "integer")
+
+    @ResponseBody
+    public CommonResult filterApp(@RequestParam(value = "filterType", defaultValue = "1") Integer filterType,
+                                  @ApiParam(name="appName",value="app名,多个app逗号隔开") String appName) {
+
+        memberService.filterApp(filterType,appName);
+
+        return  CommonResult.success("success");
     }
 
 

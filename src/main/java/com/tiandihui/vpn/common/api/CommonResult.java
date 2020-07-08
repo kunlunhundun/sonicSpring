@@ -58,11 +58,22 @@ public class CommonResult<T> {
     }
 
     /**
+     * 失败返回结果
+     */
+    public static <T> CommonResult<T> failedResult(ResultCode resultCode) {
+        return failed(resultCode);
+    }
+
+
+    /**
      * 参数验证失败返回结果
      */
     public static <T> CommonResult<T> validateFailed() {
         return failed(ResultCode.VALIDATE_FAILED);
     }
+
+
+
 
     /**
      * 参数验证失败返回结果

@@ -1,9 +1,7 @@
-package com.tiandihui.vpn.controller;
+package com.tiandihui.cmd.controller;
 
-import com.tiandihui.vpn.common.api.CommonResult;
-import com.tiandihui.vpn.domain.MailInfo;
-import com.tiandihui.vpn.domain.OrderParam;
-import com.tiandihui.vpn.service.MailService;
+import com.tiandihui.cmd.common.api.CommonResult;
+import com.tiandihui.cmd.service.MailService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
@@ -22,17 +20,15 @@ public class MailController {
     MailService mailService;
 
     @ApiOperation("通过邮件获取验证码")
-    @RequestMapping(value = "/sendCode", method = { RequestMethod.POST, RequestMethod.GET})
-    @ApiImplicitParam(name = "use", value = "1->register；2->forgetpassword;",
-            defaultValue = "1", allowableValues = "1,2",  dataType = "integer")
+    @RequestMapping(value = "/generateCode", method = { RequestMethod.POST, RequestMethod.GET})
     @ResponseBody
-    public CommonResult sendEmail(@RequestParam String username, @RequestParam int use) {
+    public CommonResult generateCode(@RequestParam String username, @RequestParam int use) {
 
-      //  MailInfo mailInfo = new MailInfo();
-       // mailInfo.setTo(username);
         mailService.generateCode(username,use);
         return CommonResult.success(null, "验证码发送成功");
     }
 
+   /* @ApiImplicitParam(name = "use", value = "1->register；2->forgetpassword;",
+            defaultValue = "1", allowableValues = "1,2",  dataType = "integer") */
 
 }

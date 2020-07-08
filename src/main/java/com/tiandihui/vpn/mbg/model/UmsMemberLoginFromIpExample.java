@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class UmsMemberFilterAppExample {
+public class UmsMemberLoginFromIpExample {
     protected String orderByClause;
 
     protected boolean distinct;
 
     protected List<Criteria> oredCriteria;
 
-    public UmsMemberFilterAppExample() {
+    public UmsMemberLoginFromIpExample() {
         oredCriteria = new ArrayList<Criteria>();
     }
 
@@ -355,273 +355,213 @@ public class UmsMemberFilterAppExample {
             return (Criteria) this;
         }
 
-        public Criteria andFilterTypeIsNull() {
-            addCriterion("filter_type is null");
+        public Criteria andFromIpIsNull() {
+            addCriterion("from_ip is null");
             return (Criteria) this;
         }
 
-        public Criteria andFilterTypeIsNotNull() {
-            addCriterion("filter_type is not null");
+        public Criteria andFromIpIsNotNull() {
+            addCriterion("from_ip is not null");
             return (Criteria) this;
         }
 
-        public Criteria andFilterTypeEqualTo(String value) {
-            addCriterion("filter_type =", value, "filterType");
+        public Criteria andFromIpEqualTo(String value) {
+            addCriterion("from_ip =", value, "fromIp");
             return (Criteria) this;
         }
 
-        public Criteria andFilterTypeNotEqualTo(String value) {
-            addCriterion("filter_type <>", value, "filterType");
+        public Criteria andFromIpNotEqualTo(String value) {
+            addCriterion("from_ip <>", value, "fromIp");
             return (Criteria) this;
         }
 
-        public Criteria andFilterTypeGreaterThan(String value) {
-            addCriterion("filter_type >", value, "filterType");
+        public Criteria andFromIpGreaterThan(String value) {
+            addCriterion("from_ip >", value, "fromIp");
             return (Criteria) this;
         }
 
-        public Criteria andFilterTypeGreaterThanOrEqualTo(String value) {
-            addCriterion("filter_type >=", value, "filterType");
+        public Criteria andFromIpGreaterThanOrEqualTo(String value) {
+            addCriterion("from_ip >=", value, "fromIp");
             return (Criteria) this;
         }
 
-        public Criteria andFilterTypeLessThan(String value) {
-            addCriterion("filter_type <", value, "filterType");
+        public Criteria andFromIpLessThan(String value) {
+            addCriterion("from_ip <", value, "fromIp");
             return (Criteria) this;
         }
 
-        public Criteria andFilterTypeLessThanOrEqualTo(String value) {
-            addCriterion("filter_type <=", value, "filterType");
+        public Criteria andFromIpLessThanOrEqualTo(String value) {
+            addCriterion("from_ip <=", value, "fromIp");
             return (Criteria) this;
         }
 
-        public Criteria andFilterTypeLike(String value) {
-            addCriterion("filter_type like", value, "filterType");
+        public Criteria andFromIpLike(String value) {
+            addCriterion("from_ip like", value, "fromIp");
             return (Criteria) this;
         }
 
-        public Criteria andFilterTypeNotLike(String value) {
-            addCriterion("filter_type not like", value, "filterType");
+        public Criteria andFromIpNotLike(String value) {
+            addCriterion("from_ip not like", value, "fromIp");
             return (Criteria) this;
         }
 
-        public Criteria andFilterTypeIn(List<String> values) {
-            addCriterion("filter_type in", values, "filterType");
+        public Criteria andFromIpIn(List<String> values) {
+            addCriterion("from_ip in", values, "fromIp");
             return (Criteria) this;
         }
 
-        public Criteria andFilterTypeNotIn(List<String> values) {
-            addCriterion("filter_type not in", values, "filterType");
+        public Criteria andFromIpNotIn(List<String> values) {
+            addCriterion("from_ip not in", values, "fromIp");
             return (Criteria) this;
         }
 
-        public Criteria andFilterTypeBetween(String value1, String value2) {
-            addCriterion("filter_type between", value1, value2, "filterType");
+        public Criteria andFromIpBetween(String value1, String value2) {
+            addCriterion("from_ip between", value1, value2, "fromIp");
             return (Criteria) this;
         }
 
-        public Criteria andFilterTypeNotBetween(String value1, String value2) {
-            addCriterion("filter_type not between", value1, value2, "filterType");
+        public Criteria andFromIpNotBetween(String value1, String value2) {
+            addCriterion("from_ip not between", value1, value2, "fromIp");
             return (Criteria) this;
         }
 
-        public Criteria andFilterAppIsNull() {
-            addCriterion("filter_app is null");
+        public Criteria andIpLocationIsNull() {
+            addCriterion("ip_location is null");
             return (Criteria) this;
         }
 
-        public Criteria andFilterAppIsNotNull() {
-            addCriterion("filter_app is not null");
+        public Criteria andIpLocationIsNotNull() {
+            addCriterion("ip_location is not null");
             return (Criteria) this;
         }
 
-        public Criteria andFilterAppEqualTo(String value) {
-            addCriterion("filter_app =", value, "filterApp");
+        public Criteria andIpLocationEqualTo(String value) {
+            addCriterion("ip_location =", value, "ipLocation");
             return (Criteria) this;
         }
 
-        public Criteria andFilterAppNotEqualTo(String value) {
-            addCriterion("filter_app <>", value, "filterApp");
+        public Criteria andIpLocationNotEqualTo(String value) {
+            addCriterion("ip_location <>", value, "ipLocation");
             return (Criteria) this;
         }
 
-        public Criteria andFilterAppGreaterThan(String value) {
-            addCriterion("filter_app >", value, "filterApp");
+        public Criteria andIpLocationGreaterThan(String value) {
+            addCriterion("ip_location >", value, "ipLocation");
             return (Criteria) this;
         }
 
-        public Criteria andFilterAppGreaterThanOrEqualTo(String value) {
-            addCriterion("filter_app >=", value, "filterApp");
+        public Criteria andIpLocationGreaterThanOrEqualTo(String value) {
+            addCriterion("ip_location >=", value, "ipLocation");
             return (Criteria) this;
         }
 
-        public Criteria andFilterAppLessThan(String value) {
-            addCriterion("filter_app <", value, "filterApp");
+        public Criteria andIpLocationLessThan(String value) {
+            addCriterion("ip_location <", value, "ipLocation");
             return (Criteria) this;
         }
 
-        public Criteria andFilterAppLessThanOrEqualTo(String value) {
-            addCriterion("filter_app <=", value, "filterApp");
+        public Criteria andIpLocationLessThanOrEqualTo(String value) {
+            addCriterion("ip_location <=", value, "ipLocation");
             return (Criteria) this;
         }
 
-        public Criteria andFilterAppLike(String value) {
-            addCriterion("filter_app like", value, "filterApp");
+        public Criteria andIpLocationLike(String value) {
+            addCriterion("ip_location like", value, "ipLocation");
             return (Criteria) this;
         }
 
-        public Criteria andFilterAppNotLike(String value) {
-            addCriterion("filter_app not like", value, "filterApp");
+        public Criteria andIpLocationNotLike(String value) {
+            addCriterion("ip_location not like", value, "ipLocation");
             return (Criteria) this;
         }
 
-        public Criteria andFilterAppIn(List<String> values) {
-            addCriterion("filter_app in", values, "filterApp");
+        public Criteria andIpLocationIn(List<String> values) {
+            addCriterion("ip_location in", values, "ipLocation");
             return (Criteria) this;
         }
 
-        public Criteria andFilterAppNotIn(List<String> values) {
-            addCriterion("filter_app not in", values, "filterApp");
+        public Criteria andIpLocationNotIn(List<String> values) {
+            addCriterion("ip_location not in", values, "ipLocation");
             return (Criteria) this;
         }
 
-        public Criteria andFilterAppBetween(String value1, String value2) {
-            addCriterion("filter_app between", value1, value2, "filterApp");
+        public Criteria andIpLocationBetween(String value1, String value2) {
+            addCriterion("ip_location between", value1, value2, "ipLocation");
             return (Criteria) this;
         }
 
-        public Criteria andFilterAppNotBetween(String value1, String value2) {
-            addCriterion("filter_app not between", value1, value2, "filterApp");
+        public Criteria andIpLocationNotBetween(String value1, String value2) {
+            addCriterion("ip_location not between", value1, value2, "ipLocation");
             return (Criteria) this;
         }
 
-        public Criteria andLoginTypeIsNull() {
-            addCriterion("login_type is null");
+        public Criteria andCityIsNull() {
+            addCriterion("city is null");
             return (Criteria) this;
         }
 
-        public Criteria andLoginTypeIsNotNull() {
-            addCriterion("login_type is not null");
+        public Criteria andCityIsNotNull() {
+            addCriterion("city is not null");
             return (Criteria) this;
         }
 
-        public Criteria andLoginTypeEqualTo(Integer value) {
-            addCriterion("login_type =", value, "loginType");
+        public Criteria andCityEqualTo(String value) {
+            addCriterion("city =", value, "city");
             return (Criteria) this;
         }
 
-        public Criteria andLoginTypeNotEqualTo(Integer value) {
-            addCriterion("login_type <>", value, "loginType");
+        public Criteria andCityNotEqualTo(String value) {
+            addCriterion("city <>", value, "city");
             return (Criteria) this;
         }
 
-        public Criteria andLoginTypeGreaterThan(Integer value) {
-            addCriterion("login_type >", value, "loginType");
+        public Criteria andCityGreaterThan(String value) {
+            addCriterion("city >", value, "city");
             return (Criteria) this;
         }
 
-        public Criteria andLoginTypeGreaterThanOrEqualTo(Integer value) {
-            addCriterion("login_type >=", value, "loginType");
+        public Criteria andCityGreaterThanOrEqualTo(String value) {
+            addCriterion("city >=", value, "city");
             return (Criteria) this;
         }
 
-        public Criteria andLoginTypeLessThan(Integer value) {
-            addCriterion("login_type <", value, "loginType");
+        public Criteria andCityLessThan(String value) {
+            addCriterion("city <", value, "city");
             return (Criteria) this;
         }
 
-        public Criteria andLoginTypeLessThanOrEqualTo(Integer value) {
-            addCriterion("login_type <=", value, "loginType");
+        public Criteria andCityLessThanOrEqualTo(String value) {
+            addCriterion("city <=", value, "city");
             return (Criteria) this;
         }
 
-        public Criteria andLoginTypeIn(List<Integer> values) {
-            addCriterion("login_type in", values, "loginType");
+        public Criteria andCityLike(String value) {
+            addCriterion("city like", value, "city");
             return (Criteria) this;
         }
 
-        public Criteria andLoginTypeNotIn(List<Integer> values) {
-            addCriterion("login_type not in", values, "loginType");
+        public Criteria andCityNotLike(String value) {
+            addCriterion("city not like", value, "city");
             return (Criteria) this;
         }
 
-        public Criteria andLoginTypeBetween(Integer value1, Integer value2) {
-            addCriterion("login_type between", value1, value2, "loginType");
+        public Criteria andCityIn(List<String> values) {
+            addCriterion("city in", values, "city");
             return (Criteria) this;
         }
 
-        public Criteria andLoginTypeNotBetween(Integer value1, Integer value2) {
-            addCriterion("login_type not between", value1, value2, "loginType");
+        public Criteria andCityNotIn(List<String> values) {
+            addCriterion("city not in", values, "city");
             return (Criteria) this;
         }
 
-        public Criteria andDeviceIdIsNull() {
-            addCriterion("device_id is null");
+        public Criteria andCityBetween(String value1, String value2) {
+            addCriterion("city between", value1, value2, "city");
             return (Criteria) this;
         }
 
-        public Criteria andDeviceIdIsNotNull() {
-            addCriterion("device_id is not null");
-            return (Criteria) this;
-        }
-
-        public Criteria andDeviceIdEqualTo(String value) {
-            addCriterion("device_id =", value, "deviceId");
-            return (Criteria) this;
-        }
-
-        public Criteria andDeviceIdNotEqualTo(String value) {
-            addCriterion("device_id <>", value, "deviceId");
-            return (Criteria) this;
-        }
-
-        public Criteria andDeviceIdGreaterThan(String value) {
-            addCriterion("device_id >", value, "deviceId");
-            return (Criteria) this;
-        }
-
-        public Criteria andDeviceIdGreaterThanOrEqualTo(String value) {
-            addCriterion("device_id >=", value, "deviceId");
-            return (Criteria) this;
-        }
-
-        public Criteria andDeviceIdLessThan(String value) {
-            addCriterion("device_id <", value, "deviceId");
-            return (Criteria) this;
-        }
-
-        public Criteria andDeviceIdLessThanOrEqualTo(String value) {
-            addCriterion("device_id <=", value, "deviceId");
-            return (Criteria) this;
-        }
-
-        public Criteria andDeviceIdLike(String value) {
-            addCriterion("device_id like", value, "deviceId");
-            return (Criteria) this;
-        }
-
-        public Criteria andDeviceIdNotLike(String value) {
-            addCriterion("device_id not like", value, "deviceId");
-            return (Criteria) this;
-        }
-
-        public Criteria andDeviceIdIn(List<String> values) {
-            addCriterion("device_id in", values, "deviceId");
-            return (Criteria) this;
-        }
-
-        public Criteria andDeviceIdNotIn(List<String> values) {
-            addCriterion("device_id not in", values, "deviceId");
-            return (Criteria) this;
-        }
-
-        public Criteria andDeviceIdBetween(String value1, String value2) {
-            addCriterion("device_id between", value1, value2, "deviceId");
-            return (Criteria) this;
-        }
-
-        public Criteria andDeviceIdNotBetween(String value1, String value2) {
-            addCriterion("device_id not between", value1, value2, "deviceId");
+        public Criteria andCityNotBetween(String value1, String value2) {
+            addCriterion("city not between", value1, value2, "city");
             return (Criteria) this;
         }
     }

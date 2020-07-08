@@ -14,7 +14,7 @@
     <result column="publickey" jdbcType="VARCHAR" property="publickey" />
     <result column="endpoint" jdbcType="VARCHAR" property="endpoint" />
     <result column="allowed_ips" jdbcType="VARCHAR" property="allowedIps" />
-    <result column="persistent_keepalive" jdbcType="BIGINT" property="persistentKeepalive" />
+    <result column="persistent_keepalive" jdbcType="INTEGER" property="persistentKeepalive" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
   </resultMap>
   <sql id="Example_Where_Clause">
@@ -121,7 +121,7 @@
     values (#{useStatus,jdbcType=INTEGER}, #{deleteStatus,jdbcType=INTEGER}, #{lineName,jdbcType=VARCHAR}, 
       #{serviceId,jdbcType=BIGINT}, #{privatekey,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, 
       #{dns,jdbcType=VARCHAR}, #{mtu,jdbcType=VARCHAR}, #{publickey,jdbcType=VARCHAR}, 
-      #{endpoint,jdbcType=VARCHAR}, #{allowedIps,jdbcType=VARCHAR}, #{persistentKeepalive,jdbcType=BIGINT}, 
+      #{endpoint,jdbcType=VARCHAR}, #{allowedIps,jdbcType=VARCHAR}, #{persistentKeepalive,jdbcType=INTEGER}, 
       #{updateTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertSelective" parameterType="com.tiandihui.cmd.mbg.model.UmsVpnWireguard">
@@ -205,7 +205,7 @@
         #{allowedIps,jdbcType=VARCHAR},
       </if>
       <if test="persistentKeepalive != null">
-        #{persistentKeepalive,jdbcType=BIGINT},
+        #{persistentKeepalive,jdbcType=INTEGER},
       </if>
       <if test="updateTime != null">
         #{updateTime,jdbcType=TIMESTAMP},
@@ -258,7 +258,7 @@
         allowed_ips = #{record.allowedIps,jdbcType=VARCHAR},
       </if>
       <if test="record.persistentKeepalive != null">
-        persistent_keepalive = #{record.persistentKeepalive,jdbcType=BIGINT},
+        persistent_keepalive = #{record.persistentKeepalive,jdbcType=INTEGER},
       </if>
       <if test="record.updateTime != null">
         update_time = #{record.updateTime,jdbcType=TIMESTAMP},
@@ -282,7 +282,7 @@
       publickey = #{record.publickey,jdbcType=VARCHAR},
       endpoint = #{record.endpoint,jdbcType=VARCHAR},
       allowed_ips = #{record.allowedIps,jdbcType=VARCHAR},
-      persistent_keepalive = #{record.persistentKeepalive,jdbcType=BIGINT},
+      persistent_keepalive = #{record.persistentKeepalive,jdbcType=INTEGER},
       update_time = #{record.updateTime,jdbcType=TIMESTAMP}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -325,7 +325,7 @@
         allowed_ips = #{allowedIps,jdbcType=VARCHAR},
       </if>
       <if test="persistentKeepalive != null">
-        persistent_keepalive = #{persistentKeepalive,jdbcType=BIGINT},
+        persistent_keepalive = #{persistentKeepalive,jdbcType=INTEGER},
       </if>
       <if test="updateTime != null">
         update_time = #{updateTime,jdbcType=TIMESTAMP},
@@ -346,7 +346,7 @@
       publickey = #{publickey,jdbcType=VARCHAR},
       endpoint = #{endpoint,jdbcType=VARCHAR},
       allowed_ips = #{allowedIps,jdbcType=VARCHAR},
-      persistent_keepalive = #{persistentKeepalive,jdbcType=BIGINT},
+      persistent_keepalive = #{persistentKeepalive,jdbcType=INTEGER},
       update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>

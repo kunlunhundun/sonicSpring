@@ -21,7 +21,7 @@ public class CmsAppFile implements Serializable {
 
     private Date createTime;
 
-    @ApiModelProperty(value = "0->android1->ios2->pc")
+    @ApiModelProperty(value = "类型：0->PC；1->android；->ios；")
     private Integer platform;
 
     private static final long serialVersionUID = 1L;

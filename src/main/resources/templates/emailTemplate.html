@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8">
+    <title>激活邮件</title>
+    <style type="text/css">
+      * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+          font-family: Verdana,Sans-Serif;
+      }
+
+      body {
+          background-color: #ECECEC;
+      }
+
+      .container {
+          width: 800px;
+          margin: 50px auto;
+      }
+
+      .header {
+          height: 80px;
+          background-color: #49bcff;
+          border-top-left-radius: 5px;
+          border-top-right-radius: 5px;
+         
+      }
+
+      .header h2 {
+          padding-top: 25px;
+          color: white;
+      }
+
+      .content {
+          background-color: #fff;
+          padding-left: 30px;
+          padding-bottom: 30px;
+          border-bottom: 1px solid #ccc;
+      }
+
+      .content h2 {
+          padding-top: 20px;
+          padding-bottom: 20px;
+      }
+
+      .content p {
+          padding-top: 10px;
+      }
+
+      .footer {
+          background-color: #fff;
+          border-bottom-left-radius: 5px;
+          border-bottom-right-radius: 5px;
+          padding: 35px;
+      }
+      .footer p {
+          color: #747474;
+          padding-top: 10px;
+      }
+  </style>
+
+  </head>
+  <body>
+      <div class="container">
+          <div class="header">
+              <img src="https://trustsonic.com:8080/img/icon_logo.jpg" width="800px" height="80px" />
+          </div>
+          <div class="content">
+			  <p/>
+              <p>Hi <b><span th:text="${email}"></span></b></p>
+              <p>Your verification code for <span th:text="${verification}"></span>:</p>
+              <p></p>
+              <p><b><span th:text="${code}"></span></b></p>
+              <p></p>
+              <p>If you think this email was sent incorrectly, </p>
+              <p>Please reply or email SiriusVPN support: <b>service@siriusvpn.com</b></p>
+			  <p/>
+			  <p/>
+			  <p>Thanks,
+			  <p>The Siriusvpn Team<p/>
+          </div>
+          <div class="footer">
+              <p> © 2010-2020 The Sirius International Ltd.</p>
+          </div>
+      </div>
+  </body>
+
+</html>

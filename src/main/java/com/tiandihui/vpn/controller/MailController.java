@@ -1,6 +1,7 @@
 package com.tiandihui.vpn.controller;
 
 import com.tiandihui.vpn.common.api.CommonResult;
+import com.tiandihui.vpn.common.api.ResultCode;
 import com.tiandihui.vpn.domain.MailInfo;
 import com.tiandihui.vpn.domain.OrderParam;
 import com.tiandihui.vpn.service.MailService;
@@ -31,7 +32,7 @@ public class MailController {
       //  MailInfo mailInfo = new MailInfo();
        // mailInfo.setTo(username);
         mailService.generateCode(username,use);
-        return CommonResult.success(null, "验证码发送成功");
+        return CommonResult.success(ResultCode.SENDCODESUCCESS);
     }
 
 

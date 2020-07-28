@@ -80,7 +80,7 @@ public class VpnMemberInfoController {
     @ApiImplicitParam(name = "connectType", value = "1->ss；2->wireguard;3->openvpn",
             defaultValue = "1", allowableValues = "1,2,3",  dataType = "integer")
     @ResponseBody
-    public CommonResult connected(@RequestParam(value = "connectType", defaultValue = "1") Integer connectType,
+    public CommonResult connected(@RequestParam(value = "connectType", defaultValue = "2") Integer connectType,
                                          @RequestParam String id, @RequestParam String serviceId) {
 
        int ret = memberService.connected(connectType, Long.valueOf(id));
@@ -96,7 +96,7 @@ public class VpnMemberInfoController {
     @ApiImplicitParam(name = "connectType", value = "1->ss；2->wireguard;3->openvpn",
             defaultValue = "1", allowableValues = "1,2,3",  dataType = "integer")
     @ResponseBody
-    public CommonResult disConnect(@RequestParam(value = "connectType", defaultValue = "1") Integer connectType,
+    public CommonResult disConnect(@RequestParam(value = "connectType", defaultValue = "2") Integer connectType,
                                   @RequestParam String id, @RequestParam String serviceId) {
 
         int ret = memberService.disConnect(connectType,Long.valueOf(id));
@@ -116,7 +116,6 @@ public class VpnMemberInfoController {
                                   @ApiParam(name="appName",value="app名,多个app逗号隔开") String appName) {
 
         memberService.filterApp(filterType,appName);
-
         return  CommonResult.success("success");
     }
 

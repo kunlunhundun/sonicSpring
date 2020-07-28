@@ -98,7 +98,127 @@ public class UmsMemberServiceImpl implements UmsMemberService {
         return member;
     }
 
+    @Override
+    public LoginSuccessInfo loginByFacebook(String username) {
 
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        HttpServletRequest request = attributes.getRequest();
+        String osType = request.getHeader("OsType");
+        if (!(osType.equals("android") || osType.equals("ios") || osType.equals("pc"))){
+            // 需要传入平台参数
+            Asserts.fail(ResultCode.VALIDATE_FAILED);
+        }
+        String deviceId = request.getHeader("deviceId");
+        String deviceBrand = request.getHeader("deviceBrand");
+
+        UmsMemberExample example = new UmsMemberExample();
+        example.createCriteria().andUsernameEqualTo(username);
+        List<UmsMember> memberList = memberMapper.selectByExample(example);
+        UmsMember umsMember = new UmsMember();
+
+        if (CollectionUtils.isEmpty(memberList)) {
+            //1.保存用戶
+            umsMember.setUsername(username);
+            umsMember.setCreateTime(new Date());
+            umsMember.setStatus(1);
+            umsMember.setSourceType(1); // facebook
+
+            //2.設置用戶等級
+            UmsMemberLevelExample levelExample = new UmsMemberLevelExample();
+            levelExample.createCriteria().andIdEqualTo(1L);
+            List<UmsMemberLevel> memberLevelList = memberLevelMapper.selectByExample(levelExample);
+            if (!CollectionUtils.isEmpty(memberLevelList)) {
+                umsMember.setMemberLevelId(memberLevelList.get(0).getId());
+            }
+            memberMapper.insert(umsMember);
+        } else  {
+            umsMember = memberList.get(0);
+        }
+
+        //3.从UmsMemberDeviceId表中查询设备之前是否有注册过，有的话获取过期日期。
+        //获取过期日期要在UmsMemberStatisticsInfo列表中查询开始的日期和过期的日期 并计算距离现在还有多久过期
+        int newExpireDay = 7; // 默认7 天的有效期
+        UmsMemberDeviceIdExample deviceIdExample = new UmsMemberDeviceIdExample();
+        deviceIdExample.createCriteria().andDeviceIdEqualTo(deviceId);
+        List<UmsMemberDeviceId> memberDeviceIdList = deviceIdMapper.selectByExample(deviceIdExample);
+        UmsMemberStatisticsInfoExample statisticsInfoExample =  new UmsMemberStatisticsInfoExample();
+        for (int i = 0; i < memberDeviceIdList.size(); i++) {
+            UmsMemberDeviceId memberDeviceId = memberDeviceIdList.get(i);
+            statisticsInfoExample.createCriteria().andMemberIdEqualTo(memberDeviceId.getMemberId() );
+            List<UmsMemberStatisticsInfo> memberStatisticsInfoList =  statisticsInfoMapper.selectByExample(statisticsInfoExample);
+            if (!CollectionUtils.isEmpty(memberStatisticsInfoList)) {
+
+                UmsMemberStatisticsInfo memberStatisticsInfo = memberStatisticsInfoList.get(0);
+                Date startRecMemberTime =  memberStatisticsInfo.getStartRecMemberTime();
+                int expireDay = memberStatisticsInfo.getExpireTime();
+                Calendar calendar = new GregorianCalendar();
+                calendar.setTime(startRecMemberTime);
+                calendar.add(calendar.DATE,expireDay); //把日期往后增加一天,整数  往后推,负数往前移动
+                Date  newDate = calendar.getTime(); //这个时间就是日期往后推一天的结果
+                Date nowDate = new Date();
+                if ( !newDate.before(nowDate)) { //没有过期  !(nowDate > newDate)
+                    newExpireDay = Utils.differentDaysByMillisecond( nowDate,newDate);
+                } else {
+                    newExpireDay = 0;
+                }
+                break;
+            }
+        }
+        //4保存过期日期到缓存中
+        if (CollectionUtils.isEmpty(memberList)) {
+            //5.把用户名和过期时间保存deviceid设备列表中
+            UmsMemberDeviceId  memberDeviceId = new UmsMemberDeviceId();
+            memberDeviceId.setDeviceId(deviceId);
+            memberDeviceId.setDevicebrand(deviceBrand);
+            memberDeviceId.setUsername(username);
+            memberDeviceId.setMemberId(umsMember.getId());
+            deviceIdMapper.insertSelective(memberDeviceId);
+            //6.吧过期时间保存到UmsMemberStatisticsInfo 表中
+            UmsMemberStatisticsInfo memberStatisticsInfo = new UmsMemberStatisticsInfo();
+            memberStatisticsInfo.setStartRecMemberTime(new Date());
+            memberStatisticsInfo.setFirstLoginTime(new Date());
+            memberStatisticsInfo.setMemberId(umsMember.getId());
+            memberStatisticsInfo.setExpireTime(newExpireDay);
+            memberStatisticsInfo.setTotalTime(newExpireDay);
+            memberStatisticsInfo.setLastLoginTime(new Date());
+            statisticsInfoMapper.insertSelective(memberStatisticsInfo);
+
+        } else  {
+
+            statisticsInfoExample.createCriteria().andMemberIdEqualTo(umsMember.getId() );
+            List<UmsMemberStatisticsInfo> memberStatisticsInfoList =  statisticsInfoMapper.selectByExample(statisticsInfoExample);
+            if (!CollectionUtils.isEmpty(memberStatisticsInfoList)) {
+                UmsMemberStatisticsInfo memberStatisticsInfo = memberStatisticsInfoList.get(0);
+                memberStatisticsInfo.setExpireTime(newExpireDay);
+                memberStatisticsInfo.setTotalTime(newExpireDay);
+                memberStatisticsInfo.setLastLoginTime(new Date());
+                statisticsInfoMapper.updateByPrimaryKey(memberStatisticsInfo);
+            }
+            if (CollectionUtils.isEmpty(memberDeviceIdList)) {
+
+                UmsMemberDeviceId  memberDeviceId = new UmsMemberDeviceId();
+                memberDeviceId.setDeviceId(deviceId);
+                memberDeviceId.setDevicebrand(deviceBrand);
+                memberDeviceId.setUsername(username);
+                memberDeviceId.setMemberId(umsMember.getId());
+                deviceIdMapper.insertSelective(memberDeviceId);
+            }
+
+        }
+
+        //7 获取用户信息 且产生token 把过期时间返回去
+        UserDetails userDetails = loadUserByUsername(username);
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+        String token = jwtTokenUtil.generateToken(userDetails);
+
+        memberCacheService.setLoginToken(umsMember.getUsername()+osType,token);
+        LoginSuccessInfo successInfo = new LoginSuccessInfo();
+        BeanUtils.copyProperties(umsMember, successInfo);
+        successInfo.setToken(token);
+        successInfo.setExpireDay(newExpireDay);
+        return successInfo;
+    }
 
     @Override
     public LoginSuccessInfo register(String username, String password, String code ,String deviceId, String deviceBrand) {
@@ -197,6 +317,8 @@ public class UmsMemberServiceImpl implements UmsMemberService {
         return successInfo;
     }
 
+
+
     @Override
     public void registerByPhone(String username, String password, String telephone, String authCode) {
         UmsMemberExample example = new UmsMemberExample();
@@ -259,11 +381,11 @@ public class UmsMemberServiceImpl implements UmsMemberService {
         example.createCriteria().andUsernameEqualTo(username);
         List<UmsMember> memberList = memberMapper.selectByExample(example);
         if (!CollectionUtils.isEmpty(memberList)) {
-            Asserts.fail("该账号不存在");
+            Asserts.fail(ResultCode.UNFINDUSER);
         }
         UmsMember member = memberList.get(0);
         if (!oldPassword.equals(member.getPassword())) {
-            Asserts.fail("密码不对");
+            Asserts.fail(ResultCode.WRONGPASSWORD);
         }
 //        if (!passwordEncoder.encode(oldPassword).equals(member.getPassword())) {
 //            Asserts.fail("密码不对");
@@ -319,7 +441,9 @@ public class UmsMemberServiceImpl implements UmsMemberService {
                 } else  {
                     Asserts.fail(ResultCode.SINGLESIGNOUT); //单点登录
                 }
-                throw new BadCredentialsException("token不正确或已失效,请重新登录");
+                Asserts.fail(ResultCode.RELOGINAGAIN);
+
+               // throw new BadCredentialsException("token不正确或已失效,请重新登录");
             }
             long endTime = System.currentTimeMillis();
             long spendTime = endTime - startTime;
@@ -328,7 +452,7 @@ public class UmsMemberServiceImpl implements UmsMemberService {
             successInfo = handleLogin(userDetails);
 
         } catch (Exception e) {
-            LOGGER.warn("登录异常:{}", e.getMessage());
+            LOGGER.warn("login error:{}", e.getMessage());
         }
         return successInfo;
     }
@@ -344,7 +468,7 @@ public class UmsMemberServiceImpl implements UmsMemberService {
             successInfo = handleLogin(userDetails);
 
         } catch (Exception e) {
-            LOGGER.warn("登录异常:{}", e.getMessage());
+            LOGGER.warn("login error:{}", e.getMessage());
         }
         return successInfo;
     }
@@ -611,7 +735,7 @@ public class UmsMemberServiceImpl implements UmsMemberService {
         int loginCount = (statisticsInfo.getLoginCount() == null) ? 1 : statisticsInfo.getLoginCount();
         loginCount = loginCount + 1;
         statisticsInfo.setLoginCount(loginCount);
-        statisticsInfoMapper.updateByExampleSelective(statisticsInfo,example);
+        statisticsInfoMapper.updateByPrimaryKeySelective(statisticsInfo);
 
         // 获取用户信息 且产生token 把过期时间返回去
         String token = null;

@@ -10,6 +10,7 @@
     <result column="content" jdbcType="VARCHAR" property="content" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="delete_status" jdbcType="INTEGER" property="deleteStatus" />
+    <result column="read_status" jdbcType="INTEGER" property="readStatus" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -70,7 +71,8 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, member_id, comment_type, nick_name, member_icon, content, create_time, delete_status
+    id, member_id, comment_type, nick_name, member_icon, content, create_time, delete_status, 
+    read_status
   </sql>
   <select id="selectByExample" parameterType="com.tiandihui.vpn.mbg.model.CmsCommentExample" resultMap="BaseResultMap">
     select
@@ -108,10 +110,10 @@
     </selectKey>
     insert into cms_comment (member_id, comment_type, nick_name, 
       member_icon, content, create_time, 
-      delete_status)
+      delete_status, read_status)
     values (#{memberId,jdbcType=BIGINT}, #{commentType,jdbcType=INTEGER}, #{nickName,jdbcType=VARCHAR}, 
       #{memberIcon,jdbcType=VARCHAR}, #{content,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP}, 
-      #{deleteStatus,jdbcType=INTEGER})
+      #{deleteStatus,jdbcType=INTEGER}, #{readStatus,jdbcType=INTEGER})
   </insert>
   <insert id="insertSelective" parameterType="com.tiandihui.vpn.mbg.model.CmsComment">
     <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
@@ -140,6 +142,9 @@
       <if test="deleteStatus != null">
         delete_status,
       </if>
+      <if test="readStatus != null">
+        read_status,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="memberId != null">
@@ -162,6 +167,9 @@
       </if>
       <if test="deleteStatus != null">
         #{deleteStatus,jdbcType=INTEGER},
+      </if>
+      <if test="readStatus != null">
+        #{readStatus,jdbcType=INTEGER},
       </if>
     </trim>
   </insert>
@@ -198,6 +206,9 @@
       <if test="record.deleteStatus != null">
         delete_status = #{record.deleteStatus,jdbcType=INTEGER},
       </if>
+      <if test="record.readStatus != null">
+        read_status = #{record.readStatus,jdbcType=INTEGER},
+      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -212,7 +223,8 @@
       member_icon = #{record.memberIcon,jdbcType=VARCHAR},
       content = #{record.content,jdbcType=VARCHAR},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
-      delete_status = #{record.deleteStatus,jdbcType=INTEGER}
+      delete_status = #{record.deleteStatus,jdbcType=INTEGER},
+      read_status = #{record.readStatus,jdbcType=INTEGER}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -241,6 +253,9 @@
       <if test="deleteStatus != null">
         delete_status = #{deleteStatus,jdbcType=INTEGER},
       </if>
+      <if test="readStatus != null">
+        read_status = #{readStatus,jdbcType=INTEGER},
+      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
@@ -252,7 +267,8 @@
       member_icon = #{memberIcon,jdbcType=VARCHAR},
       content = #{content,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
-      delete_status = #{deleteStatus,jdbcType=INTEGER}
+      delete_status = #{deleteStatus,jdbcType=INTEGER},
+      read_status = #{readStatus,jdbcType=INTEGER}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

@@ -37,7 +37,7 @@ public class VpnMemberController {
                                         @RequestParam String telphone,
                                         @RequestParam String authCode) {
         memberService.registerByPhone(username, password, telphone, authCode);
-        return CommonResult.success(null, "注册成功");
+        return CommonResult.success(null, "register is success");
     }
 
     @ApiOperation("会员注册")
@@ -52,13 +52,24 @@ public class VpnMemberController {
         return CommonResult.success(successInfo);
     }
 
+    @ApiOperation("facebook登录")
+    @RequestMapping(value = "/loginByFacebook", method = {RequestMethod.GET, RequestMethod.POST})
+    @ResponseBody
+    public CommonResult loginByFacebook(@RequestParam String username) {
+        LoginSuccessInfo successInfo = memberService.loginByFacebook(username);
+        successInfo.setTokenHead(tokenHead);
+        memberService.recLoginLog(username);
+        return CommonResult.success(successInfo);
+    }
+
+
     @ApiOperation("会员登录")
     @RequestMapping(value = "/login", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
     public CommonResult login(HttpServletRequest request, @RequestBody LoginRquestParam requestParam) {
         LoginSuccessInfo successInfo = memberService.login(requestParam.getUsername(), requestParam.getPassword());
         if (successInfo == null) {
-            return CommonResult.validateFailed("用户名或密码错误");
+            return CommonResult.validateFailed("the username is not exist or password is not correct");
         }
         successInfo.setTokenHead(tokenHead);
         String username = requestParam.getUsername();
@@ -96,7 +107,7 @@ public class VpnMemberController {
     public CommonResult updatePassword(@RequestParam String username, @RequestParam String password,
                                        @RequestParam String code) {
         memberService.updatePassword(username, password, code);
-        return CommonResult.success("更新成功");
+        return CommonResult.success("reset success");
     }
 
     @ApiOperation("更新密码")
@@ -106,7 +117,7 @@ public class VpnMemberController {
                                                     @RequestParam String newPassword) {
 
         memberService.updatePasswordByOldPassword(username, oldPassword, newPassword);
-        return CommonResult.success("更新成功");
+        return CommonResult.success("reset success");
     }
 
 

@@ -614,6 +614,66 @@ public class CmsCommentOfficialReplyExample {
             addCriterion("delete_status not between", value1, value2, "deleteStatus");
             return (Criteria) this;
         }
+
+        public Criteria andReadStatusIsNull() {
+            addCriterion("read_status is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andReadStatusIsNotNull() {
+            addCriterion("read_status is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andReadStatusEqualTo(Integer value) {
+            addCriterion("read_status =", value, "readStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andReadStatusNotEqualTo(Integer value) {
+            addCriterion("read_status <>", value, "readStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andReadStatusGreaterThan(Integer value) {
+            addCriterion("read_status >", value, "readStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andReadStatusGreaterThanOrEqualTo(Integer value) {
+            addCriterion("read_status >=", value, "readStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andReadStatusLessThan(Integer value) {
+            addCriterion("read_status <", value, "readStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andReadStatusLessThanOrEqualTo(Integer value) {
+            addCriterion("read_status <=", value, "readStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andReadStatusIn(List<Integer> values) {
+            addCriterion("read_status in", values, "readStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andReadStatusNotIn(List<Integer> values) {
+            addCriterion("read_status not in", values, "readStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andReadStatusBetween(Integer value1, Integer value2) {
+            addCriterion("read_status between", value1, value2, "readStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andReadStatusNotBetween(Integer value1, Integer value2) {
+            addCriterion("read_status not between", value1, value2, "readStatus");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {

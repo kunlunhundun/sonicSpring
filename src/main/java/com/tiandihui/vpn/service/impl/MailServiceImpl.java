@@ -12,7 +12,6 @@ import com.tiandihui.vpn.service.UmsMemberService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -20,17 +19,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.*;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Properties;
-import java.util.Random;
+
+import java.util.*;
 
 @Service
 public class MailServiceImpl implements MailService {
 
     @Autowired
     private JavaMailSenderImpl mailSender;//注入邮件工具类
+
+    @Autowired
+    private TemplateEngine templateEngine;
+
 
     @Autowired
     private UmsMemberCacheService memberCacheService;
@@ -44,16 +47,14 @@ public class MailServiceImpl implements MailService {
     @Override
     public void generateCode(String emailUser,int use) {
         if (use == 1) {
-            String subject = "注册验证码";
-            sendEmailToUser(emailUser,subject,use);
+            sendEmailToUser(emailUser,use);
         } else if (use == 2) {
 
             UmsMemberExample example = new UmsMemberExample();
             example.createCriteria().andUsernameEqualTo(emailUser);
             List<UmsMember> memberList = memberMapper.selectByExample(example);
             if (!CollectionUtils.isEmpty(memberList)) {
-                String subject = "找回密码验证码";
-                sendEmailToUser(emailUser,subject,use);
+                sendEmailToUser(emailUser,use);
 
             } else  {
                 Asserts.fail(ResultCode.UNFINDUSER);
@@ -61,10 +62,26 @@ public class MailServiceImpl implements MailService {
         }
     }
 
-    void sendEmailToUser(String emailUser, String subject,int use) {
+    void sendEmailToUser(String emailUser,int use) {
         //通过username 不用关心是用户是找密码还是注册等用途
         String userName = emailUser + "use" + String.valueOf(use);
         String code = memberCacheService.getEmailAuthCode(userName);
+        String subject = "";
+        String verificationTip = "";
+
+        String tipRegister = "Register account is";
+        String subRegister = "Register Verification";
+        String tipPassword = "password reset is";
+        String subPassword = "Password Reset Verification";
+
+        if (use == 1) {
+            subject = subRegister;
+            verificationTip = tipRegister;
+        } else  {
+            subject = subPassword;
+            verificationTip = tipPassword;
+        }
+
         if (!StringUtils.isEmpty(code)) {
             Asserts.fail(ResultCode.REPEATSENDCODE);
            logger.info("之前已经发送过验证码，请查看邮箱");
@@ -78,15 +95,23 @@ public class MailServiceImpl implements MailService {
         for (int i = 0; i < 6; i++) {
             stringBuilder.append(random.nextInt(10));
         }
+
+        Context context = new Context();
+        context.setVariable("email", emailUser);
+        context.setVariable("code", stringBuilder.toString());
+        context.setVariable("verification", verificationTip);
+        String emailTemplate = "emailTemplate";
+        String templateContent = templateEngine.process(emailTemplate, context);
+
         mailVo.setSubject(subject);
-        mailVo.setText(stringBuilder.toString());
+        mailVo.setText(templateContent);
         String fromUser = getMailSendFrom();
         mailVo.setFrom(fromUser);//邮件发信人从配置项读取
+
         MailInfo result =  sendMail(mailVo);
         if (!result.getStatus().equals("ok")){
-            Asserts.fail("发送邮件失败");
+            Asserts.fail("send email failed");
         }
-
         memberCacheService.setEmailAuthCode(userName,stringBuilder.toString());
     }
 
@@ -130,7 +155,7 @@ public class MailServiceImpl implements MailService {
             messageHelper.setFrom(mailVo.getFrom());//邮件发信人
             messageHelper.setTo(mailVo.getTo().split(","));//邮件收信人
             messageHelper.setSubject(mailVo.getSubject());//邮件主题
-            messageHelper.setText(mailVo.getText());//邮件内容
+            messageHelper.setText(mailVo.getText(),true);//邮件内容
             if (!StringUtils.isEmpty(mailVo.getCc())) {//抄送
                 messageHelper.setCc(mailVo.getCc().split(","));
             }
@@ -167,13 +192,13 @@ public class MailServiceImpl implements MailService {
     //检测邮件信息类
     private void checkMail(MailInfo mailVo) {
         if (StringUtils.isEmpty(mailVo.getTo())) {
-            throw new RuntimeException("邮件收信人不能为空");
+            throw new RuntimeException("email send address is empty");
         }
         if (StringUtils.isEmpty(mailVo.getSubject())) {
-            throw new RuntimeException("邮件主题不能为空");
+            throw new RuntimeException("email subjec is empty");
         }
         if (StringUtils.isEmpty(mailVo.getText())) {
-            throw new RuntimeException("邮件内容不能为空");
+            throw new RuntimeException("email content is empty");
         }
     }
 

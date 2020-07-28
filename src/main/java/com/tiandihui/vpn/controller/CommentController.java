@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @Api(tags = "CommentController", description = "评论信息管理")
@@ -36,7 +38,7 @@ public class CommentController {
         if (result == 0) {
             return CommonResult.failed("插入数据失败");
         }
-        return CommonResult.success(null,"反馈成功");
+        return CommonResult.success(null,"feedback success");
 
     }
 
@@ -70,5 +72,23 @@ public class CommentController {
         return CommonResult.success(null,"回复成功");
     }
 
+    @ApiOperation("用户获取官方回了多少条消息")
+    @RequestMapping(value = "/queryReplyCount", method = { RequestMethod.POST, RequestMethod.GET})
+    @ResponseBody
+    public CommonResult queryReplyCount(@RequestParam String username) {
+
+       int result =  commentService.getCommentReplyCount(username);
+//        Map<String,Integer> map = new HashMap<String, Integer>();
+//        map.put("count",result);
+       return CommonResult.success(result,"success");
+
+    }
+
+    @RequestMapping(value = "/hello", method = { RequestMethod.POST, RequestMethod.GET})
+    @ResponseBody
+    public CommonResult officialHello() {
+
+        return CommonResult.success("dao dao dao ","回复成功");
+    }
 
 }

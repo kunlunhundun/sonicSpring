@@ -23,6 +23,9 @@ public class CmsComment implements Serializable {
     @ApiModelProperty(value = "0->正常状态1->删除")
     private Integer deleteStatus;
 
+    @ApiModelProperty(value = "0->未读1->已读")
+    private Integer readStatus;
+
     private static final long serialVersionUID = 1L;
 
     public Long getId() {
@@ -89,6 +92,14 @@ public class CmsComment implements Serializable {
         this.deleteStatus = deleteStatus;
     }
 
+    public Integer getReadStatus() {
+        return readStatus;
+    }
+
+    public void setReadStatus(Integer readStatus) {
+        this.readStatus = readStatus;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -103,6 +114,7 @@ public class CmsComment implements Serializable {
         sb.append(", content=").append(content);
         sb.append(", createTime=").append(createTime);
         sb.append(", deleteStatus=").append(deleteStatus);
+        sb.append(", readStatus=").append(readStatus);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

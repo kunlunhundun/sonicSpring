@@ -47,8 +47,4 @@ public class MemberActivityServiceImpl implements MemberActivityService {
 
 
 
-
-
-
-
 }

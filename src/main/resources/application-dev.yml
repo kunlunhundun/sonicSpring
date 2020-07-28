@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8088
 #  ssl:
 #    enabled: true
 #    key-store: classpath:trustsonic.com.jks
@@ -22,6 +22,7 @@ spring:
         login-password: druid
   jpa:
     show-sql: true #打印执行的sql语句
+
 
 
   data:

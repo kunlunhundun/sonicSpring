@@ -8,15 +8,17 @@ public enum ResultCode implements IErrorCode {
     UNAUTHORIZED(401, "No login yet or token has expired"),
     FORBIDDEN(403, "no permissions"),
     UNFINDUSER(1001, "Username does not exist"),
-    WRONGCODE(1002, "the code is not correct"),
-    TIMEOUTCODE(1003, "code is timeout，please send again"),
+    WRONGCODE(1002, "Sorry,verification code is invalid or expired."),
+    TIMEOUTCODE(1003, "Sorry,verification code is invalid or expired."),
 
     WRONGPASSWORD(1004, "password is not correct"),
-    REPEATSENDCODE(1005, "the code have already to send，after 180S send again"),
+    REPEATSENDCODE(1005, "We've sent a verification code to your email address"),
     RELOGINAGAIN(1006, "please login again，has expired"),
     UNFINDCOMMENT(1007, "找不到这条反馈问题的id"),
     SINGLESIGNOUT(1008, "you are already logged in on another device"),
-    REPEATUSER(1009, "username is already exist");
+    REPEATUSER(1009, "That  username is taken.Try another."),
+    SENDCODESUCCESS(201, "\"We've sent a verification code to your email address"),
+    ;
 
 
 

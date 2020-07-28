@@ -28,6 +28,7 @@ CREATE TABLE `cms_comment` (
   `content` varchar(2000) DEFAULT NULL,
   `create_time` datetime DEFAULT NULL,
   `delete_status` int(1) DEFAULT NULL COMMENT '0->正常状态1->删除',
+  `read_status` int(1) DEFAULT NULL COMMENT '0->未读1->已读',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='用户评论表';
 
@@ -49,6 +50,8 @@ CREATE TABLE `cms_comment_official_reply` (
   `content` varchar(2000) DEFAULT NULL,
   `create_time` datetime DEFAULT NULL,
   `delete_status` int(1) DEFAULT NULL COMMENT '0->正常状态1->删除',
+  `read_status` int(1) DEFAULT NULL COMMENT '0->未读1->已读',
+
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='官方回复表';
 
@@ -98,7 +101,7 @@ CREATE TABLE `ums_member` (
   `city` varchar(64) DEFAULT NULL COMMENT '所做城市',
   `job` varchar(100) DEFAULT NULL COMMENT '职业',
   `personalized_signature` varchar(200) DEFAULT NULL COMMENT '个性签名',
-  `source_type` int(1) DEFAULT NULL COMMENT '用户来源',
+  `source_type` int(1) DEFAULT NULL COMMENT '用户来源：1->facebook',
   `integration` int(11) DEFAULT NULL COMMENT '积分',
   `luckey_count` int(11) DEFAULT NULL COMMENT '剩余抽奖次数',
   `history_integration` int(11) DEFAULT NULL COMMENT '历史积分数量',
@@ -125,7 +128,7 @@ CREATE TABLE `ums_member_device_id` (
   `devicebrand` varchar(100) DEFAULT NULL COMMENT '设备品牌名称',
   `platform` int(1) DEFAULT NULL COMMENT '登录类型：0->PC；1->android；->ios；',
   PRIMARY KEY (`id`),
-  KEY `idx_device_id` (`device_id`)
+  UNIQUE KEY `idx_device_id` (`device_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COMMENT='设备唯一标识表根据此表可以查询使用过几台设备登录过';
 
 -- ----------------------------

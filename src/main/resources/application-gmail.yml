@@ -6,6 +6,20 @@ spring:
     password: asian4you #登陆密码（或授权码）
     properties:
       from: service@siriusvpn.com #邮件发信人（即真实邮箱）
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    mode: HTML
+    encoding: UTF-8
+    servlet:
+      content-type: text/html
+    cache: false
+
+
+
+
+
+
 
 #qq dengdeng
 #  spring.mail.properties.mail.smtp.auth=true

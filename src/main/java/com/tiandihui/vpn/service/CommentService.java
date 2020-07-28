@@ -46,4 +46,8 @@ public interface CommentService {
      */
     List<MessageInfo> getMessage(int pageNum, int pageSize);
 
+    /**
+     * 用户获取官方有没有回复消息的个数
+     */
+    int getCommentReplyCount(String username);
 }

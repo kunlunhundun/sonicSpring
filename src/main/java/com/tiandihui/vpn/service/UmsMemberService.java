@@ -31,6 +31,9 @@ public interface UmsMemberService {
     @Transactional
      LoginSuccessInfo register(String username, String password, String code ,String deviceId, String deviceBrand);
 
+    @Transactional
+    LoginSuccessInfo loginByFacebook(String username);
+
     /**
      * 生成验证码
      */
